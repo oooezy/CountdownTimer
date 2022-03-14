@@ -58,8 +58,17 @@ class ViewController: UIViewController {
         
         return stackView
     }()
-
     
+    lazy var button: UIButton = {
+        let startButton = UIButton(frame: CGRect(x: 0, y: 0, width: 160, height: 48))
+        
+        startButton.backgroundColor = mainColor
+        startButton.setTitle("시작", for: .normal)
+        startButton.addTarget(self, action: #selector(didTapStartButton), for: .touchUpInside)
+        
+        return startButton
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -79,6 +88,9 @@ class ViewController: UIViewController {
         ]
         
         NSLayoutConstraint.activate(constraints)
+        
+        view.addSubview(button)
+        button.center = view.center
     }
 
     func UINavigationBar() {
@@ -90,6 +102,17 @@ class ViewController: UIViewController {
         
         self.navigationItem.title = "타이머"
     }
+    
+    @objc func didTapStartButton() {
+        let vc = UIViewController()
+        vc.title = "타이머"
+        vc.view.backgroundColor = lightBGColor
+        navigationController?.pushViewController(vc, animated: true)
+        navigationController?.navigationBar.tintColor = fontColor
+        navigationItem.backButtonTitle = ""
+    }
+    
+    
 }
 
 extension UIColor {
