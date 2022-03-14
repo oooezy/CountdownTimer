@@ -14,11 +14,71 @@ class ViewController: UIViewController {
     let lightBGColor = UIColor(rgb: 0xFAFAFA)
     let darkBGColor = UIColor(rgb: 0x252628)
     
+    lazy var hoursLabel: UILabel = {
+        let label = UILabel()
+        
+        label.text = "Hours"
+        label.textColor = fontColor
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center
+        
+        return label
+    }()
+
+    lazy var minutesLabel: UILabel = {
+        let label = UILabel()
+        
+        label.text = "Minutes"
+        label.textColor = fontColor
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center
+        
+        return label
+    }()
+
+    lazy var secondsLabel: UILabel = {
+        let label = UILabel()
+        
+        label.text = "Seconds"
+        label.textColor = fontColor
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center
+        
+        return label
+    }()
+    
+    lazy var stackView: UIStackView = {
+        let stackView = UIStackView()
+        
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .horizontal
+        stackView.alignment = .fill
+        stackView.distribution = .fillEqually
+        stackView.spacing = 0
+        
+        return stackView
+    }()
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.UINavigationBar()
-        self.view.backgroundColor = lightBGColor
+        view.backgroundColor = lightBGColor
+        UINavigationBar()
+        
+        view.addSubview(stackView)
+        [hoursLabel, minutesLabel, secondsLabel].map {
+            stackView.addArrangedSubview($0)
+        }
+        
+        let safeArea = view.safeAreaLayoutGuide
+        let constraints = [
+            stackView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 64),
+            stackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor,constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
     }
 
     func UINavigationBar() {
@@ -31,7 +91,6 @@ class ViewController: UIViewController {
         self.navigationItem.title = "타이머"
     }
 }
-
 
 extension UIColor {
    convenience init(red: Int, green: Int, blue: Int) {
