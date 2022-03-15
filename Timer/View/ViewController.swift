@@ -23,6 +23,7 @@ class ViewController: UIViewController {
         
         label.text = "Hours"
         label.textColor = fontColor
+        label.font = UIFont.Roboto(type: .Regular, size: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
         
@@ -34,6 +35,7 @@ class ViewController: UIViewController {
         
         label.text = "Minutes"
         label.textColor = fontColor
+        label.font = UIFont.Roboto(type: .Regular, size: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
         
@@ -45,6 +47,7 @@ class ViewController: UIViewController {
         
         label.text = "Seconds"
         label.textColor = fontColor
+        label.font = UIFont.Roboto(type: .Regular, size: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
         
@@ -63,7 +66,7 @@ class ViewController: UIViewController {
         return stackView
     }()
     
-    lazy var button: UIButton = {
+    lazy var startButton: UIButton = {
         let startButton = UIButton()
         
         startButton.backgroundColor = mainColor
@@ -79,12 +82,53 @@ class ViewController: UIViewController {
     
         return startButton
     }()
+    
+    lazy var stopButton: UIButton = {
+        let stopButton = UIButton()
+        
+        stopButton.backgroundColor = mainColor
+        stopButton.setTitle("일시정지", for: .normal)
+        stopButton.addTarget(self, action: #selector(didTapStartButton), for: .touchUpInside)
+        stopButton.contentEdgeInsets = UIEdgeInsets(top: 15, left: 64, bottom: 15, right: 64)
+        stopButton.layer.cornerRadius = 25
+        stopButton.layer.shadowColor = mainColor.cgColor
+        stopButton.layer.shadowOpacity = 0.3
+        stopButton.layer.shadowOffset = CGSize(width: 0, height: 6)
+        stopButton.layer.shadowRadius = 8
+        
+    
+        return stopButton
+    }()
+    
+    lazy var resetButton: UIButton = {
+        let resetButton = UIButton()
+        
+        resetButton.setImage(UIImage(named: "resetButton.png"), for: .normal)
+        resetButton.layer.shadowColor = mainColor.cgColor
+        resetButton.layer.shadowOpacity = 0.3
+        resetButton.layer.shadowOffset = CGSize(width: 0, height: 6)
+        resetButton.layer.shadowRadius = 8
+        
+        return resetButton
+    }()
+    
+    lazy var alarmButton: UIButton = {
+        let alarmButton = UIButton()
+        
+        alarmButton.setImage(UIImage(named: "alarmButton.png"), for: .normal)
+        alarmButton.layer.shadowColor = mainColor.cgColor
+        alarmButton.layer.shadowOpacity = 0.3
+        alarmButton.layer.shadowOffset = CGSize(width: 0, height: 6)
+        alarmButton.layer.shadowRadius = 8
+        
+        return alarmButton
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = lightBGColor
-        UINavigationBar()
+        navigationBar()
 //        setAttributes()
         setContraints()
         
@@ -101,10 +145,9 @@ class ViewController: UIViewController {
         view.addSubview(pickerView)
         pickerView.translatesAutoresizingMaskIntoConstraints = false
         pickerView.setValue(mainColor, forKey: "textColor")
-        print(hours.count)
 
-        view.addSubview(button)
-        button.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(startButton)
+        startButton.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(stackView)
         [hoursLabel, minutesLabel, secondsLabel].map {
@@ -117,9 +160,9 @@ class ViewController: UIViewController {
             pickerView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             pickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             pickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            button.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30),
-            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stackView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 64),
+            startButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -150),
+            startButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stackView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 100),
             stackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor,constant: 16),
             stackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16)
         ]
@@ -127,7 +170,7 @@ class ViewController: UIViewController {
         NSLayoutConstraint.activate(constraints)
     }
 
-    func UINavigationBar() {
+    func navigationBar() {
         let navBar = self.navigationController!.navigationBar
         navBar.setBackgroundImage(UIImage(), for: .default)
         navBar.shadowImage = UIImage()
@@ -145,7 +188,23 @@ class ViewController: UIViewController {
         navigationController?.pushViewController(vc, animated: true)
         navigationController?.navigationBar.tintColor = fontColor
         navigationItem.backButtonTitle = ""
+        
+        vc.view.addSubview(stopButton)
+        stopButton.translatesAutoresizingMaskIntoConstraints = false
+        stopButton.bottomAnchor.constraint(equalTo: vc.view.bottomAnchor, constant: -150).isActive = true
+        stopButton.centerXAnchor.constraint(equalTo: vc.view.centerXAnchor).isActive = true
+        
+        vc.view.addSubview(resetButton)
+        resetButton.translatesAutoresizingMaskIntoConstraints = false
+        resetButton.bottomAnchor.constraint(equalTo: vc.view.bottomAnchor, constant: -150).isActive = true
+        resetButton.leadingAnchor.constraint(equalTo: vc.view.leadingAnchor, constant: 30).isActive = true
+        
+        vc.view.addSubview(alarmButton)
+        alarmButton.translatesAutoresizingMaskIntoConstraints = false
+        alarmButton.bottomAnchor.constraint(equalTo: vc.view.bottomAnchor, constant: -150).isActive = true
+        alarmButton.trailingAnchor.constraint(equalTo: vc.view.trailingAnchor, constant: -30).isActive = true
     }
+
 }
 
 // MARK: - Extensions
@@ -197,7 +256,7 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         }()
         setTime.textColor = (row == pickerView.selectedRow(inComponent: component)) ? mainColor : fontColor
         setTime.textAlignment = .center
-        setTime.font = UIFont.systemFont(ofSize: 40, weight: .light)
+        setTime.font = UIFont.Roboto(type: .Light, size: 40)
         
         return setTime
     }
@@ -223,4 +282,30 @@ extension UIColor {
            blue: rgb & 0xFF
        )
    }
+}
+
+extension UIFont {
+    class func Roboto(type: RobotoType, size: CGFloat) -> UIFont! {
+        guard let font = UIFont(name: type.name, size: size) else {
+            return nil
+        }
+        return font
+    }
+
+    public enum RobotoType {
+        case Light
+        case Medium
+        case Regular
+        
+        var name: String {
+            switch self {
+            case .Light:
+                return "Roboto-Light"
+            case .Medium:
+                return "Roboto-Medium"
+            case .Regular:
+                return "Roboto-Regular"
+            }
+        }
+    }
 }
