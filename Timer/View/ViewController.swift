@@ -14,15 +14,9 @@ class ViewController: UIViewController {
     
     let shapeLayer = CAShapeLayer()
     
-    var durationTimer = 60
+    var seconds = 60
     var isTimerRunning = false
-    
-//    print("\(pickerView.selectedRow(inComponent: 0)):\(pickerView.selectedRow(inComponent: 2)):\( pickerView.selectedRow(inComponent: 4))")
-    
-    
-    var hours: [String] = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"]
-    var minSec: [String] = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59"]
-    
+
     lazy var hoursLabel: UILabel = {
         let label = UILabel()
         
@@ -76,7 +70,7 @@ class ViewController: UIViewController {
         
         startButton.backgroundColor = .mainColor
         startButton.setTitle("시작", for: .normal)
-        startButton.addTarget(self, action: #selector(didTapStartButton), for: .touchUpInside)
+        startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
         startButton.contentEdgeInsets = UIEdgeInsets(top: 15, left: 64, bottom: 15, right: 64)
         startButton.layer.cornerRadius = 25
         startButton.layer.shadowColor = UIColor(hex: 0xE06565).cgColor
@@ -94,7 +88,7 @@ class ViewController: UIViewController {
         pauseButton.backgroundColor = .mainColor
         pauseButton.setTitle("일시정지", for: .normal)
         pauseButton.addTarget(self, action: #selector(pauseButtonTapped), for: .touchUpInside)
-        pauseButton.contentEdgeInsets = UIEdgeInsets(top: 15, left: 64, bottom: 15, right: 64)
+        pauseButton.contentEdgeInsets = UIEdgeInsets(top: 15, left: 54, bottom: 15, right: 54)
         pauseButton.layer.cornerRadius = 25
         pauseButton.layer.shadowColor = UIColor(hex: 0xE06565).cgColor
         pauseButton.layer.shadowOpacity = 0.3
@@ -112,8 +106,8 @@ class ViewController: UIViewController {
         resetButton.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
         resetButton.layer.shadowColor = UIColor(hex: 0xE06565).cgColor
         resetButton.layer.shadowOpacity = 0.3
-        resetButton.layer.shadowOffset = CGSize(width: 0, height: 6)
-        resetButton.layer.shadowRadius = 8
+        resetButton.layer.shadowOffset = CGSize(width: 0, height: 5)
+        resetButton.layer.shadowRadius = 4
         resetButton.translatesAutoresizingMaskIntoConstraints = false
         
         return resetButton
@@ -126,26 +120,28 @@ class ViewController: UIViewController {
         alarmButton.addTarget(self, action: #selector(alarmButtonTapped), for: .touchUpInside)
         alarmButton.layer.shadowColor = UIColor(hex: 0xE06565).cgColor
         alarmButton.layer.shadowOpacity = 0.3
-        alarmButton.layer.shadowOffset = CGSize(width: 0, height: 6)
-        alarmButton.layer.shadowRadius = 8
+        alarmButton.layer.shadowOffset = CGSize(width: 0, height: 5)
+        alarmButton.layer.shadowRadius = 4
         alarmButton.translatesAutoresizingMaskIntoConstraints = false
         
         return alarmButton
     }()
     
-    let shapeView: UIImageView = {
+    lazy var shapeView: UIImageView = {
         let imageView = UIImageView()
         
         imageView.image = UIImage(named: "ellipse.svg")
+        imageView.frame = CGRect(x: 0, y: 0, width: 250, height: 250)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
         return imageView
     }()
     
-    let timerLabel: UILabel = {
+    lazy var timerLabel: UILabel = {
         let label = UILabel()
+        
         label.font = UIFont.Roboto(type: .Light, size: 40)
-        label.textColor = UIColor.systemPink
+        label.textColor = .mainColor
         label.translatesAutoresizingMaskIntoConstraints = false
         
         return label
@@ -159,7 +155,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        timerLabel.text = "\(durationTimer)"
+        timerLabel.text = secondsToTime(seconds: seconds)
         
         view.backgroundColor = .lightBGColor
         
@@ -193,14 +189,17 @@ class ViewController: UIViewController {
         view.addSubview(pickerView)
         NSLayoutConstraint.activate([
             pickerView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
-            pickerView.topAnchor.constraint(equalTo: stackView.topAnchor, constant: 150),
+            pickerView.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
+//            pickerView.topAnchor.constraint(equalTo: stackView.topAnchor, constant: 50),
             pickerView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 16),
-            pickerView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16)
+            pickerView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16),
+            pickerView.heightAnchor.constraint(equalToConstant: 450)
         ])
         pickerView.translatesAutoresizingMaskIntoConstraints = false
     }
 
     func navigationBar() {
+        
         let navBar = self.navigationController!.navigationBar
         navBar.setBackgroundImage(UIImage(), for: .default)
         navBar.shadowImage = UIImage()
@@ -212,15 +211,37 @@ class ViewController: UIViewController {
     
     func runTimer() {
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
+        isTimerRunning = true
+    }
+    
+    func totalSeconds() -> Int {
+        let hours = pickerView.selectedRow(inComponent: 0)
+        let minutes = pickerView.selectedRow(inComponent: 2)
+        let seconds = pickerView.selectedRow(inComponent: 4)
+        
+        let time = ( hours * 3600 ) + ( minutes  * 60 ) + seconds
+        print(time)
+        return time
+    }
+    
+//    let seconds = secondsToTime(seconds: time)
+    func secondsToTime(seconds: Int) -> String {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.hour, .minute, .second]
+        formatter.zeroFormattingBehavior = .pad
+        formatter.unitsStyle = .positional
+        
+        let formattedString = formatter.string(from: TimeInterval(seconds))!
+        return formattedString
     }
     
     // MARK: - Selectors
-    @objc func didTapStartButton() {
+    @objc func startButtonTapped() {
         
-        runTimer()
-        basicAnimation()
-        
-        print("\(pickerView.selectedRow(inComponent: 0)):\(pickerView.selectedRow(inComponent: 2)):\( pickerView.selectedRow(inComponent: 4))")
+        if isTimerRunning == false {
+            runTimer()
+            basicAnimation()
+        }
         
         let vc = UIViewController()
         vc.title = "타이머"
@@ -229,23 +250,24 @@ class ViewController: UIViewController {
         navigationController?.navigationBar.tintColor = .fontColor
         navigationItem.backButtonTitle = ""
         
+        let safeArea = vc.view.safeAreaLayoutGuide
+        
         vc.view.addSubview(pauseButton)
         NSLayoutConstraint.activate([
-            pauseButton.bottomAnchor.constraint(equalTo: vc.view.bottomAnchor, constant: -150),
+            pauseButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -100),
             pauseButton.centerXAnchor.constraint(equalTo: vc.view.centerXAnchor)
         ])
-        
+
         vc.view.addSubview(resetButton)
         NSLayoutConstraint.activate([
-            resetButton.bottomAnchor.constraint(equalTo: vc.view.bottomAnchor, constant: -150),
-            resetButton.leadingAnchor.constraint(equalTo: vc.view.leadingAnchor, constant: 30)
+            resetButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -102),
+            resetButton.trailingAnchor.constraint(equalTo: pauseButton.leadingAnchor, constant: -15)
         ])
 
-        
         vc.view.addSubview(alarmButton)
         NSLayoutConstraint.activate([
-            alarmButton.bottomAnchor.constraint(equalTo: vc.view.bottomAnchor, constant: -150),
-            alarmButton.trailingAnchor.constraint(equalTo: vc.view.trailingAnchor, constant: -30)
+            alarmButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -102),
+            alarmButton.leadingAnchor.constraint(equalTo: pauseButton.trailingAnchor, constant: 15)
         ])
 
         shapeView.addSubview(timerLabel)
@@ -257,21 +279,22 @@ class ViewController: UIViewController {
         vc.view.addSubview(shapeView)
         NSLayoutConstraint.activate([
             shapeView.centerXAnchor.constraint(equalTo: vc.view.centerXAnchor),
-            shapeView.centerYAnchor.constraint(equalTo: vc.view.centerYAnchor),
-            shapeView.heightAnchor.constraint(equalToConstant: 250),
-            shapeView.widthAnchor.constraint(equalToConstant: 250)
+            shapeView.centerYAnchor.constraint(equalTo: vc.view.centerYAnchor)
+//            shapeView.heightAnchor.constraint(equalToConstant: 250),
+//            shapeView.widthAnchor.constraint(equalToConstant: 250)
         ])
+        print(shapeView.frame.width)
     }
     
     @objc func updateTimer() {
-        durationTimer -= 1
-        timerLabel.text = "\(durationTimer)" // data
+        seconds -= 1
+        timerLabel.text = secondsToTime(seconds: seconds)
         
-        if durationTimer <= 0 {
+        if seconds <= 0 {
             timer!.invalidate()
             timer = nil
             pauseButton.setTitle("다시시작", for: .normal)
-            durationTimer = 60 // data
+            seconds = 60
         }
     }
     
@@ -279,15 +302,18 @@ class ViewController: UIViewController {
         if pauseButton.currentTitle == "일시정지" {
             timer!.invalidate()
             pauseButton.setTitle("다시시작", for: .normal)
+            isTimerRunning = false
         } else {
             runTimer()
             pauseButton.setTitle("일시정지", for: .normal)
+            isTimerRunning = true
         }
     }
     
     @objc func resetButtonTapped() {
-        durationTimer = 60 // data
-        timerLabel.text = "\(durationTimer)"
+        seconds = 60
+        timerLabel.text = secondsToTime(seconds: seconds)
+        isTimerRunning = true
     }
     
     @objc func alarmButtonTapped() {
@@ -297,19 +323,18 @@ class ViewController: UIViewController {
     // MARK: - Animation
     func animationCircular() {
         
-        let center = CGPoint(x: shapeView.frame.width / 2, y: shapeView.frame.height / 2)
-        
+        let center = CGPoint(x: shapeView.frame.size.width / 2, y: shapeView.frame.size.height / 2)
         let endAngle = (-CGFloat.pi / 2)
         let startAngle = 2 * CGFloat.pi + endAngle
         
-        let circularPath = UIBezierPath(arcCenter: center, radius: 128, startAngle: startAngle, endAngle: endAngle, clockwise: false)
+        let circularPath = UIBezierPath(arcCenter: center, radius: 120, startAngle: startAngle, endAngle: endAngle, clockwise: false)
         
         shapeLayer.path = circularPath.cgPath
         shapeLayer.lineWidth = 10
         shapeLayer.fillColor = UIColor.clear.cgColor
+        shapeLayer.strokeColor = UIColor(hex: 0xE06565).cgColor
         shapeLayer.strokeEnd = 1
         shapeLayer.lineCap = CAShapeLayerLineCap.round
-        shapeLayer.strokeColor = UIColor(hex: 0xE06565).cgColor
         shapeView.layer.addSublayer(shapeLayer)
     }
 
@@ -318,59 +343,9 @@ class ViewController: UIViewController {
         let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
         
         basicAnimation.toValue = 0
-        basicAnimation.duration = CFTimeInterval(durationTimer)
+        basicAnimation.duration = CFTimeInterval(seconds)
         basicAnimation.fillMode = CAMediaTimingFillMode.forwards
         basicAnimation.isRemovedOnCompletion = true
         shapeLayer.add(basicAnimation, forKey: "basicAnimation")
-    }
-}
-
-// MARK: - Extensions
-extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
-    
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 5
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
-        return 88
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        switch (component) {
-        case 0:
-            return hours.count
-        case 1, 3:
-            return 1;
-        case 2, 4:
-            return minSec.count
-        default:
-            return 1;
-        }
-    }
-
-    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-        let setTime = UILabel(frame: CGRect(x: 0, y: 0, width: 54, height: 56))
-        setTime.text = {
-            switch (component) {
-            case 0:
-                return hours[row]
-            case 2, 4:
-                return minSec[row]
-            case 1, 3:
-                return ":"
-            default:
-                return ""
-            }
-        }()
-        setTime.textColor = (row == pickerView.selectedRow(inComponent: component)) ? .mainColor : .fontColor
-        setTime.textAlignment = .center
-        setTime.font = UIFont.Roboto(type: .Light, size: 40)
-        
-        return setTime
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        pickerView.reloadComponent(component)
     }
 }
