@@ -23,11 +23,11 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
         case 0:
             return 24
         case 1, 3:
-            return 1;
+            return 1
         case 2, 4:
             return 60
         default:
-            return 1;
+            return 1
         }
     }
 
@@ -53,6 +53,20 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        switch component {
+            case 0:
+                hours = row
+            case 2:
+                minutes = row
+            case 4:
+                seconds = row
+            default:
+                break
+        }
+        
+        print("\(hours) : \(minutes) : \(seconds)")
+        print("durationTime : \(( hours * 3600 ) + ( minutes  * 60 ) + seconds)")
+        
         pickerView.reloadComponent(component)
     }
 }

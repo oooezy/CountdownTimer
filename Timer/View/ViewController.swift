@@ -1,22 +1,22 @@
-//
-//  ViewController.swift
-//  Timer
-//
-//  Created by 이은지 on 2022/03/14.
-//
-
 import UIKit
 
 class ViewController: UIViewController {
     private let pickerView = UIPickerView()
     
     var timer: Timer?
+    var isTimerRunning = false
+    
+    lazy var hours: Int = pickerView.selectedRow(inComponent: 0)
+    lazy var minutes: Int = pickerView.selectedRow(inComponent: 2)
+    lazy var seconds: Int = pickerView.selectedRow(inComponent: 4)
+    
+    lazy var durationTime: Int = ( hours * 3600 ) + ( minutes  * 60 ) + seconds
+    lazy var remainingTime: Int = durationTime
+
     
     let shapeLayer = CAShapeLayer()
-    
-    var seconds = 60
-    var isTimerRunning = false
 
+    // MARK: - UI
     lazy var hoursLabel: UILabel = {
         let label = UILabel()
         
@@ -155,8 +155,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        timerLabel.text = secondsToTime(seconds: seconds)
-        
         view.backgroundColor = .lightBGColor
         
         navigationBar()
@@ -164,6 +162,27 @@ class ViewController: UIViewController {
         
         pickerView.delegate = self
         pickerView.dataSource = self
+        
+        pickerView.selectRow(1, inComponent: 2, animated: false)
+        pickerView.selectRow(30, inComponent: 4, animated: false)
+        
+        timerLabel.text = secondsToTime(seconds: durationTime)
+        
+        print("main durationTime : \(durationTime)")
+    
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        isTimerRunning = false
+        print("화면사라짐 : \(durationTime)")
+    
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        if isTimerRunning == false {
+            runTimer()
+            basicAnimation()
+        }
     }
 
     private func setContraints() {
@@ -190,7 +209,6 @@ class ViewController: UIViewController {
         NSLayoutConstraint.activate([
             pickerView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
             pickerView.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
-//            pickerView.topAnchor.constraint(equalTo: stackView.topAnchor, constant: 50),
             pickerView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 16),
             pickerView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16),
             pickerView.heightAnchor.constraint(equalToConstant: 450)
@@ -213,18 +231,7 @@ class ViewController: UIViewController {
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
         isTimerRunning = true
     }
-    
-    func totalSeconds() -> Int {
-        let hours = pickerView.selectedRow(inComponent: 0)
-        let minutes = pickerView.selectedRow(inComponent: 2)
-        let seconds = pickerView.selectedRow(inComponent: 4)
-        
-        let time = ( hours * 3600 ) + ( minutes  * 60 ) + seconds
-        print(time)
-        return time
-    }
-    
-//    let seconds = secondsToTime(seconds: time)
+
     func secondsToTime(seconds: Int) -> String {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.hour, .minute, .second]
@@ -235,8 +242,16 @@ class ViewController: UIViewController {
         return formattedString
     }
     
+    
     // MARK: - Selectors
     @objc func startButtonTapped() {
+        
+        durationTime = ( hours * 3600 ) + ( minutes  * 60 ) + seconds
+        remainingTime = durationTime
+        
+        timerLabel.text = secondsToTime(seconds: durationTime)
+        
+        print("start duration = \(durationTime)")
         
         if isTimerRunning == false {
             runTimer()
@@ -280,22 +295,8 @@ class ViewController: UIViewController {
         NSLayoutConstraint.activate([
             shapeView.centerXAnchor.constraint(equalTo: vc.view.centerXAnchor),
             shapeView.centerYAnchor.constraint(equalTo: vc.view.centerYAnchor)
-//            shapeView.heightAnchor.constraint(equalToConstant: 250),
-//            shapeView.widthAnchor.constraint(equalToConstant: 250)
         ])
         print(shapeView.frame.width)
-    }
-    
-    @objc func updateTimer() {
-        seconds -= 1
-        timerLabel.text = secondsToTime(seconds: seconds)
-        
-        if seconds <= 0 {
-            timer!.invalidate()
-            timer = nil
-            pauseButton.setTitle("다시시작", for: .normal)
-            seconds = 60
-        }
     }
     
     @objc func pauseButtonTapped() {
@@ -303,21 +304,36 @@ class ViewController: UIViewController {
             timer!.invalidate()
             pauseButton.setTitle("다시시작", for: .normal)
             isTimerRunning = false
+            shapeLayer.pauseAnimation()
         } else {
             runTimer()
             pauseButton.setTitle("일시정지", for: .normal)
             isTimerRunning = true
+            shapeLayer.resumeAnimation()
         }
     }
     
     @objc func resetButtonTapped() {
-        seconds = 60
-        timerLabel.text = secondsToTime(seconds: seconds)
-        isTimerRunning = true
+        isTimerRunning = false
+        timerLabel.text = secondsToTime(seconds: durationTime)
+        shapeLayer.resetAnimation()
+        basicAnimation()
     }
     
     @objc func alarmButtonTapped() {
         
+    }
+    
+    @objc func updateTimer() {
+        remainingTime -= 1
+        timerLabel.text = secondsToTime(seconds: remainingTime)
+        
+        if remainingTime <= 0 {
+            timer!.invalidate()
+            timer = nil
+            pauseButton.setTitle("다시시작", for: .normal)
+            remainingTime = durationTime
+        }
     }
     
     // MARK: - Animation
@@ -327,7 +343,11 @@ class ViewController: UIViewController {
         let endAngle = (-CGFloat.pi / 2)
         let startAngle = 2 * CGFloat.pi + endAngle
         
-        let circularPath = UIBezierPath(arcCenter: center, radius: 120, startAngle: startAngle, endAngle: endAngle, clockwise: false)
+        let circularPath = UIBezierPath(arcCenter: center,
+                                        radius: 120,
+                                        startAngle: startAngle,
+                                        endAngle: endAngle,
+                                        clockwise: false)
         
         shapeLayer.path = circularPath.cgPath
         shapeLayer.lineWidth = 10
@@ -343,7 +363,7 @@ class ViewController: UIViewController {
         let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
         
         basicAnimation.toValue = 0
-        basicAnimation.duration = CFTimeInterval(seconds)
+        basicAnimation.duration = CFTimeInterval(durationTime)
         basicAnimation.fillMode = CAMediaTimingFillMode.forwards
         basicAnimation.isRemovedOnCompletion = true
         shapeLayer.add(basicAnimation, forKey: "basicAnimation")
