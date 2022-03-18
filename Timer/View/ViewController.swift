@@ -183,7 +183,7 @@ class ViewController: UIViewController {
         stackView.addArrangedSubview(minutesLabel)
         stackView.addArrangedSubview(secondsLabel)
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 100),
+            stackView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 80),
             stackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor,constant: 16),
             stackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16)
         ])
@@ -197,7 +197,7 @@ class ViewController: UIViewController {
         
         view.addSubview(startButton)
         NSLayoutConstraint.activate([
-            startButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -90),
+            startButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -70),
             startButton.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor)
         ])
         
@@ -207,7 +207,7 @@ class ViewController: UIViewController {
             pickerView.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
             pickerView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 16),
             pickerView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16),
-            pickerView.heightAnchor.constraint(equalToConstant: 400)
+            pickerView.heightAnchor.constraint(equalToConstant: 350)
         ])
         pickerView.translatesAutoresizingMaskIntoConstraints = false
     }
@@ -244,8 +244,6 @@ class ViewController: UIViewController {
         durationTime = ( hours * 3600 ) + ( minutes  * 60 ) + seconds
         remainingTime = durationTime
         
-        print("durationTime: \(durationTime)")
-        
         runTimer()
         basicAnimation()
         
@@ -262,19 +260,19 @@ class ViewController: UIViewController {
         
         vc.view.addSubview(pauseButton)
         NSLayoutConstraint.activate([
-            pauseButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -90),
+            pauseButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -70),
             pauseButton.centerXAnchor.constraint(equalTo: vc.view.centerXAnchor)
         ])
 
         vc.view.addSubview(resetButton)
         NSLayoutConstraint.activate([
-            resetButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -92),
+            resetButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -72),
             resetButton.trailingAnchor.constraint(equalTo: pauseButton.leadingAnchor, constant: -15)
         ])
 
         vc.view.addSubview(alarmButton)
         NSLayoutConstraint.activate([
-            alarmButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -92),
+            alarmButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -72),
             alarmButton.leadingAnchor.constraint(equalTo: pauseButton.trailingAnchor, constant: 15)
         ])
 
