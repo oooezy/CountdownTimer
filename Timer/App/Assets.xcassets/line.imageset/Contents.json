@@ -1,17 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "buttonBG.svg",
+      "filename" : "Group 3.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "buttonBG-1.svg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "buttonBG-2.svg",
       "idiom" : "universal",
       "scale" : "3x"
     }

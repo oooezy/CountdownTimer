@@ -19,6 +19,8 @@
 		C0B1B19B27E1B4BF0017CB22 /* UIFont + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B1B19A27E1B4BF0017CB22 /* UIFont + Extension.swift */; };
 		C0B1B1A227E2140A0017CB22 /* UIViewController + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B1B1A127E2140A0017CB22 /* UIViewController + Extension.swift */; };
 		C0B1B1A827E330CE0017CB22 /* CAShapeLayer + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B1B1A727E330CE0017CB22 /* CAShapeLayer + Extension.swift */; };
+		C0DAE3FB27E4B33200B82647 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DAE3FA27E4B33200B82647 /* ViewModel.swift */; };
+		C0DAE40727E4C42300B82647 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DAE40627E4C42300B82647 /* Model.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +38,8 @@
 		C0B1B19A27E1B4BF0017CB22 /* UIFont + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont + Extension.swift"; sourceTree = "<group>"; };
 		C0B1B1A127E2140A0017CB22 /* UIViewController + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController + Extension.swift"; sourceTree = "<group>"; };
 		C0B1B1A727E330CE0017CB22 /* CAShapeLayer + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CAShapeLayer + Extension.swift"; sourceTree = "<group>"; };
+		C0DAE3FA27E4B33200B82647 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		C0DAE40627E4C42300B82647 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +96,8 @@
 			isa = PBXGroup;
 			children = (
 				C003870127DEE457006F418F /* ViewController.swift */,
+				C0DAE3FA27E4B33200B82647 /* ViewModel.swift */,
+				C0DAE40627E4C42300B82647 /* Model.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -193,7 +199,9 @@
 				C003870227DEE457006F418F /* ViewController.swift in Sources */,
 				C0B1B19727E1B0540017CB22 /* UIColor + Extension.swift in Sources */,
 				C0B1B1A827E330CE0017CB22 /* CAShapeLayer + Extension.swift in Sources */,
+				C0DAE3FB27E4B33200B82647 /* ViewModel.swift in Sources */,
 				C00386FE27DEE457006F418F /* AppDelegate.swift in Sources */,
+				C0DAE40727E4C42300B82647 /* Model.swift in Sources */,
 				C0B1B1A227E2140A0017CB22 /* UIViewController + Extension.swift in Sources */,
 				C003870027DEE457006F418F /* SceneDelegate.swift in Sources */,
 			);

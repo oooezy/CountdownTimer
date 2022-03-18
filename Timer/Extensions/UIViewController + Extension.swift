@@ -64,9 +64,6 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
                 break
         }
         
-        print("\(hours) : \(minutes) : \(seconds)")
-        print("durationTime : \(( hours * 3600 ) + ( minutes  * 60 ) + seconds)")
-        
         pickerView.reloadComponent(component)
     }
 }

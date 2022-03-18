@@ -1,23 +1,8 @@
 import UIKit
 
 class ViewController: UIViewController {
-    private let pickerView = UIPickerView()
-    
-    var timer: Timer?
-    var isTimerRunning = false
-    
-    lazy var hours: Int = pickerView.selectedRow(inComponent: 0)
-    lazy var minutes: Int = pickerView.selectedRow(inComponent: 2)
-    lazy var seconds: Int = pickerView.selectedRow(inComponent: 4)
-    
-    lazy var durationTime: Int = ( hours * 3600 ) + ( minutes  * 60 ) + seconds
-    lazy var remainingTime: Int = durationTime
 
-    
-    let shapeLayer = CAShapeLayer()
-
-    // MARK: - UI
-    lazy var hoursLabel: UILabel = {
+    let hoursLabel: UILabel = {
         let label = UILabel()
         
         label.text = "Hours"
@@ -29,7 +14,7 @@ class ViewController: UIViewController {
         return label
     }()
 
-    lazy var minutesLabel: UILabel = {
+    let minutesLabel: UILabel = {
         let label = UILabel()
         
         label.text = "Minutes"
@@ -41,7 +26,7 @@ class ViewController: UIViewController {
         return label
     }()
 
-    lazy var secondsLabel: UILabel = {
+    let secondsLabel: UILabel = {
         let label = UILabel()
         
         label.text = "Seconds"
@@ -53,7 +38,7 @@ class ViewController: UIViewController {
         return label
     }()
     
-    lazy var stackView: UIStackView = {
+    let stackView: UIStackView = {
         let stackView = UIStackView()
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -65,7 +50,16 @@ class ViewController: UIViewController {
         return stackView
     }()
     
-    lazy var startButton: UIButton = {
+    let line: UIImageView = {
+        let imageView = UIImageView()
+        
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        let image = UIImage(named: "line.svg")
+        imageView.image = image
+        return imageView
+    }()
+    
+    let startButton: UIButton = {
         let startButton = UIButton()
         
         startButton.backgroundColor = .mainColor
@@ -146,6 +140,19 @@ class ViewController: UIViewController {
         
         return label
     }()
+    
+    private let pickerView = UIPickerView()
+    private let shapeLayer = CAShapeLayer()
+    
+    var timer: Timer?
+    var isAlarmButtonTapped: Bool = false
+    
+    lazy var hours: Int = pickerView.selectedRow(inComponent: 0)
+    lazy var minutes: Int = pickerView.selectedRow(inComponent: 2)
+    lazy var seconds: Int = pickerView.selectedRow(inComponent: 4)
+    
+    lazy var durationTime: Int = ( hours * 3600 ) + ( minutes  * 60 ) + seconds
+    lazy var remainingTime: Int = durationTime
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -163,26 +170,8 @@ class ViewController: UIViewController {
         pickerView.delegate = self
         pickerView.dataSource = self
         
-        pickerView.selectRow(1, inComponent: 2, animated: false)
+        pickerView.selectRow(0, inComponent: 2, animated: false)
         pickerView.selectRow(30, inComponent: 4, animated: false)
-        
-        timerLabel.text = secondsToTime(seconds: durationTime)
-        
-        print("main durationTime : \(durationTime)")
-    
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        isTimerRunning = false
-        print("화면사라짐 : \(durationTime)")
-    
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        if isTimerRunning == false {
-            runTimer()
-            basicAnimation()
-        }
     }
 
     private func setContraints() {
@@ -199,9 +188,16 @@ class ViewController: UIViewController {
             stackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16)
         ])
         
+        view.addSubview(line)
+        NSLayoutConstraint.activate([
+            line.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 20),
+            line.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 16),
+            line.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16)
+        ])
+        
         view.addSubview(startButton)
         NSLayoutConstraint.activate([
-            startButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -100),
+            startButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -90),
             startButton.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor)
         ])
         
@@ -211,7 +207,7 @@ class ViewController: UIViewController {
             pickerView.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
             pickerView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 16),
             pickerView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16),
-            pickerView.heightAnchor.constraint(equalToConstant: 450)
+            pickerView.heightAnchor.constraint(equalToConstant: 400)
         ])
         pickerView.translatesAutoresizingMaskIntoConstraints = false
     }
@@ -229,7 +225,6 @@ class ViewController: UIViewController {
     
     func runTimer() {
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
-        isTimerRunning = true
     }
 
     func secondsToTime(seconds: Int) -> String {
@@ -245,18 +240,16 @@ class ViewController: UIViewController {
     
     // MARK: - Selectors
     @objc func startButtonTapped() {
-        
+
         durationTime = ( hours * 3600 ) + ( minutes  * 60 ) + seconds
         remainingTime = durationTime
         
+        print("durationTime: \(durationTime)")
+        
+        runTimer()
+        basicAnimation()
+        
         timerLabel.text = secondsToTime(seconds: durationTime)
-        
-        print("start duration = \(durationTime)")
-        
-        if isTimerRunning == false {
-            runTimer()
-            basicAnimation()
-        }
         
         let vc = UIViewController()
         vc.title = "타이머"
@@ -269,19 +262,19 @@ class ViewController: UIViewController {
         
         vc.view.addSubview(pauseButton)
         NSLayoutConstraint.activate([
-            pauseButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -100),
+            pauseButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -90),
             pauseButton.centerXAnchor.constraint(equalTo: vc.view.centerXAnchor)
         ])
 
         vc.view.addSubview(resetButton)
         NSLayoutConstraint.activate([
-            resetButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -102),
+            resetButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -92),
             resetButton.trailingAnchor.constraint(equalTo: pauseButton.leadingAnchor, constant: -15)
         ])
 
         vc.view.addSubview(alarmButton)
         NSLayoutConstraint.activate([
-            alarmButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -102),
+            alarmButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -92),
             alarmButton.leadingAnchor.constraint(equalTo: pauseButton.trailingAnchor, constant: 15)
         ])
 
@@ -296,43 +289,73 @@ class ViewController: UIViewController {
             shapeView.centerXAnchor.constraint(equalTo: vc.view.centerXAnchor),
             shapeView.centerYAnchor.constraint(equalTo: vc.view.centerYAnchor)
         ])
-        print(shapeView.frame.width)
     }
     
     @objc func pauseButtonTapped() {
         if pauseButton.currentTitle == "일시정지" {
             timer!.invalidate()
             pauseButton.setTitle("다시시작", for: .normal)
-            isTimerRunning = false
             shapeLayer.pauseAnimation()
         } else {
-            runTimer()
-            pauseButton.setTitle("일시정지", for: .normal)
-            isTimerRunning = true
-            shapeLayer.resumeAnimation()
+            if remainingTime <= 0 {
+                
+                durationTime = ( hours * 3600 ) + ( minutes  * 60 ) + seconds
+                remainingTime = durationTime
+                
+                runTimer()
+                basicAnimation()
+                
+                timerLabel.text = secondsToTime(seconds: durationTime)
+            } else {
+                runTimer()
+                pauseButton.setTitle("일시정지", for: .normal)
+                shapeLayer.resumeAnimation()
+            }
+            
         }
     }
     
     @objc func resetButtonTapped() {
-        isTimerRunning = false
         timerLabel.text = secondsToTime(seconds: durationTime)
+        pauseButton.setTitle("다시시작", for: .normal)
+        remainingTime = 0
         shapeLayer.resetAnimation()
-        basicAnimation()
+//        basicAnimation()
     }
     
     @objc func alarmButtonTapped() {
-        
+        if isAlarmButtonTapped == false {
+            isAlarmButtonTapped = true
+            
+            let alert = UIAlertController(title: "알림", message: "알람이 설정되었어요", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "확인", style: UIAlertAction.Style.default))
+            present(alert,animated: true,completion: nil)
+        } else {
+            isAlarmButtonTapped = false
+            
+            let alert = UIAlertController(title: "알림", message: "알람이 해제되었어요", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "확인", style: UIAlertAction.Style.default))
+            present(alert,animated: true,completion: nil)
+        }
     }
     
     @objc func updateTimer() {
-        remainingTime -= 1
-        timerLabel.text = secondsToTime(seconds: remainingTime)
-        
         if remainingTime <= 0 {
             timer!.invalidate()
             timer = nil
             pauseButton.setTitle("다시시작", for: .normal)
-            remainingTime = durationTime
+            remainingTime = 0
+            
+            if isAlarmButtonTapped == true {
+                let alert = UIAlertController(title: "알림", message: "시간이 다됐어요! 🙌🏻", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "확인", style: UIAlertAction.Style.default))
+                present(alert,animated: true,completion: nil)
+            }
+
+        } else {
+            remainingTime -= 1
+            timerLabel.text = secondsToTime(seconds: remainingTime)
+            
         }
     }
     
