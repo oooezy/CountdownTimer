@@ -1,73 +1,38 @@
 import UIKit
 
 class ViewController: UIViewController {
-
-    let hoursLabel: UILabel = {
-        let label = UILabel()
-        
-        label.text = "Hours"
-        label.textColor = .fontColor
-        label.font = UIFont.Roboto(type: .Regular, size: 16)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textAlignment = .center
-        
-        return label
-    }()
-
-    let minutesLabel: UILabel = {
-        let label = UILabel()
-        
-        label.text = "Minutes"
-        label.textColor = .fontColor
-        label.font = UIFont.Roboto(type: .Regular, size: 16)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textAlignment = .center
-        
-        return label
-    }()
-
-    let secondsLabel: UILabel = {
-        let label = UILabel()
-        
-        label.text = "Seconds"
-        label.textColor = .fontColor
-        label.font = UIFont.Roboto(type: .Regular, size: 16)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textAlignment = .center
-        
-        return label
-    }()
     
-    let stackView: UIStackView = {
+    // MARK: - UI
+    
+    private let stackView: UIStackView = {
         let stackView = UIStackView()
         
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
-        stackView.alignment = .fill
         stackView.distribution = .fillEqually
-        stackView.spacing = 0
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         
         return stackView
     }()
     
-    let line: UIImageView = {
+    private let line: UIImageView = {
         let imageView = UIImageView()
         
-        imageView.translatesAutoresizingMaskIntoConstraints = false
         let image = UIImage(named: "line.svg")
         imageView.image = image
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        
         return imageView
     }()
     
-    let startButton: UIButton = {
+    private let startButton: UIButton = {
         let startButton = UIButton()
         
         startButton.backgroundColor = .mainColor
-        startButton.setTitle("시작", for: .normal)
+        startButton.setTitle("타이머 시작", for: .normal)
         startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
-        startButton.contentEdgeInsets = UIEdgeInsets(top: 15, left: 64, bottom: 15, right: 64)
+        startButton.contentEdgeInsets = UIEdgeInsets(top: 15, left: 54, bottom: 15, right: 54)
         startButton.layer.cornerRadius = 25
-        startButton.layer.shadowColor = UIColor(hex: 0xE06565).cgColor
+        startButton.layer.shadowColor = UIColor.mainColor.cgColor
         startButton.layer.shadowOpacity = 0.3
         startButton.layer.shadowOffset = CGSize(width: 0, height: 6)
         startButton.layer.shadowRadius = 8
@@ -76,29 +41,30 @@ class ViewController: UIViewController {
         return startButton
     }()
     
-    lazy var pauseButton: UIButton = {
-        let pauseButton = UIButton()
-        
-        pauseButton.backgroundColor = .mainColor
-        pauseButton.setTitle("일시정지", for: .normal)
-        pauseButton.addTarget(self, action: #selector(pauseButtonTapped), for: .touchUpInside)
-        pauseButton.contentEdgeInsets = UIEdgeInsets(top: 15, left: 54, bottom: 15, right: 54)
-        pauseButton.layer.cornerRadius = 25
-        pauseButton.layer.shadowColor = UIColor(hex: 0xE06565).cgColor
-        pauseButton.layer.shadowOpacity = 0.3
-        pauseButton.layer.shadowOffset = CGSize(width: 0, height: 6)
-        pauseButton.layer.shadowRadius = 8
-        pauseButton.translatesAutoresizingMaskIntoConstraints = false
-    
-        return pauseButton
+    private lazy var stopButton: UIButton = {
+        let stopButton = UIButton()
+
+        stopButton.backgroundColor = .mainColor
+        stopButton.setTitle("타이머 종료", for: .normal)
+        stopButton.addTarget(self, action: #selector(stopButtonTapped), for: .touchUpInside)
+        stopButton.contentEdgeInsets = UIEdgeInsets(top: 15, left: 54, bottom: 15, right: 54)
+        stopButton.layer.cornerRadius = 25
+        stopButton.layer.shadowColor = UIColor.mainColor.cgColor
+        stopButton.layer.shadowOpacity = 0.3
+        stopButton.layer.shadowOffset = CGSize(width: 0, height: 6)
+        stopButton.layer.shadowRadius = 8
+        stopButton.translatesAutoresizingMaskIntoConstraints = false
+
+        return stopButton
     }()
     
-    lazy var resetButton: UIButton = {
+    private lazy var resetButton: UIButton = {
         let resetButton = UIButton()
         
         resetButton.setImage(UIImage(named: "resetButton.png"), for: .normal)
+        resetButton.contentMode = .scaleAspectFit
         resetButton.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
-        resetButton.layer.shadowColor = UIColor(hex: 0xE06565).cgColor
+        resetButton.layer.shadowColor = UIColor.mainColor.cgColor
         resetButton.layer.shadowOpacity = 0.3
         resetButton.layer.shadowOffset = CGSize(width: 0, height: 5)
         resetButton.layer.shadowRadius = 4
@@ -107,12 +73,13 @@ class ViewController: UIViewController {
         return resetButton
     }()
     
-    lazy var alarmButton: UIButton = {
+    private lazy var alarmButton: UIButton = {
         let alarmButton = UIButton()
         
         alarmButton.setImage(UIImage(named: "alarmButton.png"), for: .normal)
+        alarmButton.contentMode = .scaleAspectFit
         alarmButton.addTarget(self, action: #selector(alarmButtonTapped), for: .touchUpInside)
-        alarmButton.layer.shadowColor = UIColor(hex: 0xE06565).cgColor
+        alarmButton.layer.shadowColor = UIColor.mainColor.cgColor
         alarmButton.layer.shadowOpacity = 0.3
         alarmButton.layer.shadowOffset = CGSize(width: 0, height: 5)
         alarmButton.layer.shadowRadius = 4
@@ -121,7 +88,9 @@ class ViewController: UIViewController {
         return alarmButton
     }()
     
-    lazy var shapeView: UIImageView = {
+    private lazy var pickerView = UIPickerView()
+    
+    private lazy var shapeView: UIImageView = {
         let imageView = UIImageView()
         
         imageView.image = UIImage(named: "ellipse.svg")
@@ -131,8 +100,8 @@ class ViewController: UIViewController {
         return imageView
     }()
     
-    lazy var timerLabel: UILabel = {
-        let label = UILabel()
+    private lazy var timeLabel: UILabel = {
+        var label = UILabel()
         
         label.font = UIFont.Roboto(type: .Light, size: 40)
         label.textColor = .mainColor
@@ -141,28 +110,42 @@ class ViewController: UIViewController {
         return label
     }()
     
-    private let pickerView = UIPickerView()
+    // MARK: - Properties
+    
     private let shapeLayer = CAShapeLayer()
     
-    var timer: Timer?
     var isAlarmButtonTapped: Bool = false
     
-    lazy var hours: Int = pickerView.selectedRow(inComponent: 0)
-    lazy var minutes: Int = pickerView.selectedRow(inComponent: 2)
-    lazy var seconds: Int = pickerView.selectedRow(inComponent: 4)
-    
-    lazy var durationTime: Int = ( hours * 3600 ) + ( minutes  * 60 ) + seconds
-    lazy var remainingTime: Int = durationTime
+    lazy var pickerViewData: [[String]] = {
+        let hours: [String] = Array(0...24).map { String($0) }
+        let minutes: [String] = Array(0...59).map { String($0) }
+        let seconds: [String] = Array(0...59).map { String($0) }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        self.animationCircular()
+        let data: [[String]] = [hours, [":"], minutes, [":"], seconds]
+        return data
+    }()
+    
+    var duration: TimeInterval {
+        let hoursString = pickerView.selectedRow(inComponent: 0)
+        let minutesString = pickerView.selectedRow(inComponent: 2)
+        let secondsString = pickerView.selectedRow(inComponent: 4)
+        
+        let hours = Int(hoursString)
+        let minutes = Int(minutesString)
+        let seconds = Int(secondsString)
+        
+        let totalSeconds = TimeInterval(( hours * 3600 ) + ( minutes  * 60 ) + seconds)
+        return totalSeconds
     }
+    
+    let countdownTimer = CountdownTimer()
+    
+    // MARK: - View Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .lightBGColor
+        self.view.backgroundColor = .lightBGColor
         
         navigationBar()
         setContraints()
@@ -172,18 +155,24 @@ class ViewController: UIViewController {
         
         pickerView.selectRow(0, inComponent: 2, animated: false)
         pickerView.selectRow(30, inComponent: 4, animated: false)
-    }
-
-    private func setContraints() {
         
-        let safeArea = view.safeAreaLayoutGuide
+        countdownTimer.duration = duration
+        countdownTimer.delegate = self
+        
+        updateViews()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        self.animationCircular()
+    }
+    
+    private func setContraints() {
+        let safeArea = self.view.safeAreaLayoutGuide
         
         view.addSubview(stackView)
-        stackView.addArrangedSubview(hoursLabel)
-        stackView.addArrangedSubview(minutesLabel)
-        stackView.addArrangedSubview(secondsLabel)
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 80),
+            stackView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 70),
             stackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor,constant: 16),
             stackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16)
         ])
@@ -210,46 +199,52 @@ class ViewController: UIViewController {
             pickerView.heightAnchor.constraint(equalToConstant: 350)
         ])
         pickerView.translatesAutoresizingMaskIntoConstraints = false
-    }
-
-    func navigationBar() {
         
+        createStackView()
+    }
+    
+    func updateViews() {
+        switch countdownTimer.state {
+        case .started:
+            timeLabel.text = countdownTimer.secondsToString(seconds: Int(countdownTimer.timeRemaining))
+        case .stopped:
+            timeLabel.text = countdownTimer.secondsToString(seconds: 0)
+        case .reset:
+            timeLabel.text = countdownTimer.secondsToString(seconds: Int(countdownTimer.timeRemaining))
+        }
+    }
+    
+    func createStackView() {
+        let timerTitle = ["Hours", "Minutes", "Seconds"]
+        
+        for title in timerTitle {
+            let label = UILabel()
+            
+            label.text = title
+            label.textColor = .fontColor
+            label.font = UIFont.Roboto(type: .Regular, size: 18)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            label.textAlignment = .center
+            
+            stackView.addArrangedSubview(label)
+        }
+    }
+    
+    func navigationBar() {
         let navBar = self.navigationController!.navigationBar
         navBar.setBackgroundImage(UIImage(), for: .default)
         navBar.shadowImage = UIImage()
         navBar.isTranslucent = true
-        navBar.titleTextAttributes = [.foregroundColor: UIColor(hex: 0xA3A3A3)]
+        navBar.titleTextAttributes = [.foregroundColor: UIColor.fontColor]
         
         self.navigationItem.title = "타이머"
     }
     
-    func runTimer() {
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
-    }
-
-    func secondsToTime(seconds: Int) -> String {
-        let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.hour, .minute, .second]
-        formatter.zeroFormattingBehavior = .pad
-        formatter.unitsStyle = .positional
-        
-        let formattedString = formatter.string(from: TimeInterval(seconds))!
-        return formattedString
-    }
+    // MARK: - objc
     
-    
-    // MARK: - Selectors
     @objc func startButtonTapped() {
-
-        durationTime = ( hours * 3600 ) + ( minutes  * 60 ) + seconds
-        remainingTime = durationTime
-        
-        runTimer()
-        basicAnimation()
-        
-        timerLabel.text = secondsToTime(seconds: durationTime)
-        
         let vc = UIViewController()
+        
         vc.title = "타이머"
         vc.view.backgroundColor = .lightBGColor
         navigationController?.pushViewController(vc, animated: true)
@@ -258,135 +253,125 @@ class ViewController: UIViewController {
         
         let safeArea = vc.view.safeAreaLayoutGuide
         
-        vc.view.addSubview(pauseButton)
+        vc.view.addSubview(stopButton)
         NSLayoutConstraint.activate([
-            pauseButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -70),
-            pauseButton.centerXAnchor.constraint(equalTo: vc.view.centerXAnchor)
+            stopButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -70),
+            stopButton.centerXAnchor.constraint(equalTo: vc.view.centerXAnchor)
         ])
 
         vc.view.addSubview(resetButton)
         NSLayoutConstraint.activate([
             resetButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -72),
-            resetButton.trailingAnchor.constraint(equalTo: pauseButton.leadingAnchor, constant: -15)
+            resetButton.trailingAnchor.constraint(equalTo: stopButton.leadingAnchor, constant: -16)
         ])
 
         vc.view.addSubview(alarmButton)
         NSLayoutConstraint.activate([
             alarmButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -72),
-            alarmButton.leadingAnchor.constraint(equalTo: pauseButton.trailingAnchor, constant: 15)
+            alarmButton.leadingAnchor.constraint(equalTo: stopButton.trailingAnchor, constant: 16)
         ])
 
-        shapeView.addSubview(timerLabel)
-        NSLayoutConstraint.activate([
-            timerLabel.centerXAnchor.constraint(equalTo: shapeView.centerXAnchor),
-            timerLabel.centerYAnchor.constraint(equalTo: shapeView.centerYAnchor)
-        ])
-        
         vc.view.addSubview(shapeView)
         NSLayoutConstraint.activate([
             shapeView.centerXAnchor.constraint(equalTo: vc.view.centerXAnchor),
             shapeView.centerYAnchor.constraint(equalTo: vc.view.centerYAnchor)
         ])
-    }
-    
-    @objc func pauseButtonTapped() {
-        if pauseButton.currentTitle == "일시정지" {
-            timer!.invalidate()
-            pauseButton.setTitle("다시시작", for: .normal)
-            shapeLayer.pauseAnimation()
-        } else {
-            if remainingTime <= 0 {
-                
-                durationTime = ( hours * 3600 ) + ( minutes  * 60 ) + seconds
-                remainingTime = durationTime
-                
-                runTimer()
-                basicAnimation()
-                
-                timerLabel.text = secondsToTime(seconds: durationTime)
-            } else {
-                runTimer()
-                pauseButton.setTitle("일시정지", for: .normal)
-                shapeLayer.resumeAnimation()
-            }
-            
+        
+        shapeView.addSubview(timeLabel)
+        NSLayoutConstraint.activate([
+            timeLabel.centerXAnchor.constraint(equalTo: shapeView.centerXAnchor),
+            timeLabel.centerYAnchor.constraint(equalTo: shapeView.centerYAnchor)
+        ])
+        
+        countdownTimer.start()
+        updateViews()
+        basicAnimation()
+        
+        if stopButton.currentTitle == "타이머 시작" {
+            stopButton.setTitle("타이머 종료", for: .normal)
         }
     }
     
-    @objc func resetButtonTapped() {
-        timerLabel.text = secondsToTime(seconds: durationTime)
-        pauseButton.setTitle("다시시작", for: .normal)
-        remainingTime = 0
-        shapeLayer.resetAnimation()
-//        basicAnimation()
+    @objc func stopButtonTapped() {
+        if stopButton.currentTitle == "타이머 종료" {
+            self.navigationController?.popViewController(animated: true)
+        } else {
+            countdownTimer.start()
+            updateViews()
+            basicAnimation()
+            stopButton.setTitle("타이머 종료", for: .normal)
+        }
     }
-    
+
+    @objc func resetButtonTapped() {
+        countdownTimer.reset()
+        updateViews()
+        shapeLayer.resetAnimation()
+        stopButton.setTitle("타이머 시작", for: .normal)
+    }
+
     @objc func alarmButtonTapped() {
         if isAlarmButtonTapped == false {
             isAlarmButtonTapped = true
-            
+
             let alert = UIAlertController(title: "알림", message: "알람이 설정되었어요", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "확인", style: UIAlertAction.Style.default))
-            present(alert,animated: true,completion: nil)
+            self.present(alert,animated: true,completion: nil)
         } else {
             isAlarmButtonTapped = false
-            
+
             let alert = UIAlertController(title: "알림", message: "알람이 해제되었어요", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "확인", style: UIAlertAction.Style.default))
-            present(alert,animated: true,completion: nil)
+            self.present(alert,animated: true,completion: nil)
         }
     }
-    
-    @objc func updateTimer() {
-        if remainingTime <= 0 {
-            timer!.invalidate()
-            timer = nil
-            pauseButton.setTitle("다시시작", for: .normal)
-            remainingTime = 0
-            
-            if isAlarmButtonTapped == true {
-                let alert = UIAlertController(title: "알림", message: "시간이 다됐어요! 🙌🏻", preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "확인", style: UIAlertAction.Style.default))
-                present(alert,animated: true,completion: nil)
-            }
 
-        } else {
-            remainingTime -= 1
-            timerLabel.text = secondsToTime(seconds: remainingTime)
-            
-        }
-    }
     
     // MARK: - Animation
     func animationCircular() {
-        
         let center = CGPoint(x: shapeView.frame.size.width / 2, y: shapeView.frame.size.height / 2)
         let endAngle = (-CGFloat.pi / 2)
         let startAngle = 2 * CGFloat.pi + endAngle
-        
+
         let circularPath = UIBezierPath(arcCenter: center,
                                         radius: 120,
                                         startAngle: startAngle,
                                         endAngle: endAngle,
                                         clockwise: false)
-        
+
         shapeLayer.path = circularPath.cgPath
         shapeLayer.lineWidth = 10
         shapeLayer.fillColor = UIColor.clear.cgColor
-        shapeLayer.strokeColor = UIColor(hex: 0xE06565).cgColor
+        shapeLayer.strokeColor = UIColor.mainColor.cgColor
         shapeLayer.strokeEnd = 1
         shapeLayer.lineCap = CAShapeLayerLineCap.round
         shapeView.layer.addSublayer(shapeLayer)
     }
 
     func basicAnimation() {
-        
         let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
-        
+
         basicAnimation.toValue = 0
-        basicAnimation.duration = CFTimeInterval(durationTime)
+        basicAnimation.duration = CFTimeInterval(duration)
         basicAnimation.fillMode = CAMediaTimingFillMode.forwards
         basicAnimation.isRemovedOnCompletion = true
         shapeLayer.add(basicAnimation, forKey: "basicAnimation")
+    }
+}
+
+extension ViewController: CountdownTimerDelegate {
+    func timerDidFinish() {
+        updateViews()
+        stopButton.setTitle("타이머 시작", for: .normal)
+        
+        if isAlarmButtonTapped == true {
+            let alert = UIAlertController(title: "알림", message: "시간이 다됐어요! 🙌🏻", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "확인", style: UIAlertAction.Style.default))
+            self.present(alert,animated: true,completion: nil)
+        }
+    }
+    
+    func timerDidUpdate(timeRemaining: TimeInterval) {
+        updateViews()
     }
 }

@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "resetButton.svg",
+      "filename" : "Reset Button.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "resetButton-1.svg",
+      "filename" : "Reset Button-1.svg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "resetButton-2.svg",
+      "filename" : "Reset Button-2.svg",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -9,7 +9,7 @@ import UIKit
 
 extension UIColor {
     
-    static let mainColor = UIColor(hex: 0xE06565)
+    static let mainColor = UIColor(hex: 0xFA5656)
     static let fontColor = UIColor(hex: 0xA3A3A3)
     static let lightBGColor = UIColor(hex: 0xFAFAFA)
     
