@@ -78,7 +78,15 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         guard let tableView = view as? UITableViewHeaderFooterView else { return }
         tableView.textLabel?.textColor = UIColor.fontColor
         tableView.textLabel?.font = UIFont.Roboto(type: .Medium, size: 18)
-        tableView.contentView.backgroundColor = UIColor(hex: 0xF2F2F2)
+        tableView.contentView.backgroundColor = UIColor { tc in
+            switch tc.userInterfaceStyle {
+            case .dark:
+                return UIColor(hex: 0x313233)
+            default:
+                return UIColor(hex: 0xF2F2F2)
+            }
+        }
+
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -88,11 +96,10 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         cell.textLabel?.text = text
         cell.textLabel?.font = UIFont.Roboto(type: .Regular, size: 16)
         cell.textLabel?.textColor = UIColor.fontColor
+        cell.backgroundColor = UIColor.init(named: "BGColor")
+        cell.layer.addBorder([.bottom], color: UIColor.init(named: "lineColor") ?? .fontColor, width: 1.0)
+        cell.layer.addBorder([.top], color: UIColor.init(named: "lineColor2") ?? .fontColor, width: 1.0)
         
-        cell.layer.addBorder([.bottom], color: UIColor(hex: 0xECECEC), width: 1.0)
-        cell.layer.addBorder([.top], color: .white, width: 1.0)
-        
-        //here is programatically switch make to the table view
         let switchView = UISwitch(frame: .zero)
         switchView.onTintColor = .mainColor
         switchView.setOn(false, animated: true)
@@ -101,8 +108,16 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         
         if indexPath[0] == 0 {
             cell.accessoryView = switchView
+        } else {
+            let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String
+            
+            let versionLabel = UILabel()
+            versionLabel.text = version
+            versionLabel.font = UIFont.Roboto(type: .Regular, size: 16)
+            versionLabel.textColor = UIColor.fontColor
+            
+            cell.accessoryView = versionLabel
         }
-        
         
         return cell
     }
@@ -114,5 +129,4 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 56
     }
-
 }

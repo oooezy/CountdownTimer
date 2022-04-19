@@ -8,7 +8,12 @@ class ViewController: UIViewController {
         
         table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         table.separatorStyle = .none
+        table.backgroundColor = UIColor.init(named: "BGColor")
         table.translatesAutoresizingMaskIntoConstraints = false
+        
+        if #available(iOS 15.0, *) {
+            table.sectionHeaderTopPadding = 1
+        }
         
         return table
     }()
@@ -38,7 +43,7 @@ class ViewController: UIViewController {
         
         startButton.backgroundColor = .mainColor
         startButton.setTitle("타이머 시작", for: .normal)
-        startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
+        startButton.addTarget(ViewController.self, action: #selector(startButtonTapped), for: .touchUpInside)
         startButton.contentEdgeInsets = UIEdgeInsets(top: 15, left: 54, bottom: 15, right: 54)
         startButton.layer.cornerRadius = 25
         startButton.layer.shadowColor = UIColor.mainColor.cgColor
@@ -102,7 +107,7 @@ class ViewController: UIViewController {
     private lazy var shapeView: UIImageView = {
         let imageView = UIImageView()
         
-        imageView.image = UIImage(named: "ellipse.svg")
+        imageView.image = UIImage.init(named: "ellipse.svg")
         imageView.frame = CGRect(x: 0, y: 0, width: 250, height: 250)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -158,7 +163,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = .lightBGColor
+        self.view.backgroundColor = UIColor.init(named: "BGColor")
         
         navigationBar()
         setContraints()
@@ -177,7 +182,19 @@ class ViewController: UIViewController {
         
         updateViews()
         configureItems()
-        navigationController?.navigationBar.tintColor = .fontColor
+        navigationController?.navigationBar.tintColor = UIColor.fontColor
+        
+
+//        modeSwitch.isOn = defaults.bool(forKey: "darkModeState")
+//                
+//        if let window = UIApplication.shared.windows.first {
+//            if #available(iOS 13.0, *) {
+//                window.overrideUserInterfaceStyle = modeSwitch.isOn == true ? .dark : .light
+//                defaults.set(modeSwitch.isOn, forKey: "darkModeState")
+//            } else {
+//                window.overrideUserInterfaceStyle = .light
+//            }
+//        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -248,7 +265,7 @@ class ViewController: UIViewController {
             let label = UILabel()
             
             label.text = title
-            label.textColor = .fontColor
+            label.textColor = UIColor.fontColor
             label.font = UIFont.Roboto(type: .Regular, size: 18)
             label.translatesAutoresizingMaskIntoConstraints = false
             label.textAlignment = .center
@@ -273,9 +290,9 @@ class ViewController: UIViewController {
         let vc = UIViewController()
         
         vc.title = "타이머"
-        vc.view.backgroundColor = .lightBGColor
+        vc.view.backgroundColor = UIColor.init(named: "BGColor")
         navigationController?.pushViewController(vc, animated: true)
-        navigationController?.navigationBar.tintColor = .fontColor
+        navigationController?.navigationBar.tintColor = UIColor.fontColor
         navigationItem.backButtonTitle = ""
         
         let safeArea = vc.view.safeAreaLayoutGuide
@@ -357,7 +374,7 @@ class ViewController: UIViewController {
         let vc = UIViewController()
         
         vc.title = "설정"
-        vc.view.backgroundColor = .lightBGColor
+        vc.view.backgroundColor = UIColor.init(named: "BGColor")
         navigationController?.pushViewController(vc, animated: true)
         navigationItem.backButtonTitle = ""
         
@@ -372,9 +389,23 @@ class ViewController: UIViewController {
         ])
     }
 
+    let defaults = UserDefaults.standard
+    
     @objc func switchChanged(_ sender : UISwitch!){
-        print("table row switch Changed \(sender.tag)")
-        print("The switch is \(sender.isOn ? "ON" : "OFF")")
+        if let window = UIApplication.shared.windows.first {
+            if #available(iOS 13.0, *) {
+                window.overrideUserInterfaceStyle = sender.tag == 0 && sender.isOn == true ? .dark : .light
+                defaults.set(sender.isOn, forKey: "darkModeState")
+            } else {
+                window.overrideUserInterfaceStyle = .light
+            }
+        }
+        
+        if sender.tag == 1 && sender.isOn {
+            isAlarmButtonTapped = true
+        } else {
+            isAlarmButtonTapped = false
+        }
   }
 
     

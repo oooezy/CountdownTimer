@@ -11,7 +11,9 @@ extension UIColor {
     
     static let mainColor = UIColor(hex: 0xFA5656)
     static let fontColor = UIColor(hex: 0xA3A3A3)
+//    static let darkFontColor = UIColor(hex: 0xF6F6F6)
     static let lightBGColor = UIColor(hex: 0xFAFAFA)
+    static let darkBGColor = UIColor(hex: 0x27282B)
     
     // RGB값으로 색 생성
     convenience init(red: Int, green: Int, blue: Int, a: CGFloat = 1.0) {
