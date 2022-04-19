@@ -3,6 +3,15 @@ import UIKit
 class ViewController: UIViewController {
     
     // MARK: - UI
+    let table: UITableView = {
+        let table = UITableView()
+        
+        table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        table.separatorStyle = .none
+        table.translatesAutoresizingMaskIntoConstraints = false
+        
+        return table
+    }()
     
     private let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -109,6 +118,7 @@ class ViewController: UIViewController {
         
         return label
     }()
+
     
     // MARK: - Properties
     
@@ -140,6 +150,9 @@ class ViewController: UIViewController {
     
     let countdownTimer = CountdownTimer()
     
+    let settingList: [String] = ["다크모드 설정", "알람 설정"]
+    let etcList: [String] = ["버전"]
+    
     // MARK: - View Lifecycle
     
     override func viewDidLoad() {
@@ -159,7 +172,12 @@ class ViewController: UIViewController {
         countdownTimer.duration = duration
         countdownTimer.delegate = self
         
+        table.delegate = self
+        table.dataSource = self
+        
         updateViews()
+        configureItems()
+        navigationController?.navigationBar.tintColor = .fontColor
     }
     
     override func viewDidLayoutSubviews() {
@@ -194,13 +212,22 @@ class ViewController: UIViewController {
         NSLayoutConstraint.activate([
             pickerView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
             pickerView.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
-            pickerView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 16),
-            pickerView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16),
+            pickerView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            pickerView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
             pickerView.heightAnchor.constraint(equalToConstant: 350)
         ])
         pickerView.translatesAutoresizingMaskIntoConstraints = false
         
         createStackView()
+    }
+    
+    private func configureItems() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            image: UIImage(named: "settingButton.svg"),
+            style: .done,
+            target: self,
+            action: #selector(settingButtonTapped)
+        )
     }
     
     func updateViews() {
@@ -325,6 +352,30 @@ class ViewController: UIViewController {
             self.present(alert,animated: true,completion: nil)
         }
     }
+    
+    @objc func settingButtonTapped() {
+        let vc = UIViewController()
+        
+        vc.title = "설정"
+        vc.view.backgroundColor = .lightBGColor
+        navigationController?.pushViewController(vc, animated: true)
+        navigationItem.backButtonTitle = ""
+        
+        let safeArea = vc.view.safeAreaLayoutGuide
+        
+        vc.view.addSubview(table)
+        NSLayoutConstraint.activate([
+            table.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
+            table.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
+            table.topAnchor.constraint(equalTo: safeArea.topAnchor),
+            table.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor)
+        ])
+    }
+
+    @objc func switchChanged(_ sender : UISwitch!){
+        print("table row switch Changed \(sender.tag)")
+        print("The switch is \(sender.isOn ? "ON" : "OFF")")
+  }
 
     
     // MARK: - Animation
@@ -375,3 +426,5 @@ extension ViewController: CountdownTimerDelegate {
         updateViews()
     }
 }
+
+
