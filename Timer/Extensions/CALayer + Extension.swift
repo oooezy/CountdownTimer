@@ -27,7 +27,9 @@ extension CALayer {
             default:
                 break
             }
-            border.backgroundColor = color.cgColor;
+            
+            border.backgroundColor = color.cgColor
+            
             self.addSublayer(border)
         }
     }

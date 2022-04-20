@@ -77,7 +77,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         
         guard let tableView = view as? UITableViewHeaderFooterView else { return }
         tableView.textLabel?.textColor = UIColor.fontColor
-        tableView.textLabel?.font = UIFont.Roboto(type: .Medium, size: 18)
+        tableView.textLabel?.font = UIFont.Roboto(type: .Medium, size: 14)
         tableView.contentView.backgroundColor = UIColor { tc in
             switch tc.userInterfaceStyle {
             case .dark:
@@ -97,36 +97,45 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         cell.textLabel?.font = UIFont.Roboto(type: .Regular, size: 16)
         cell.textLabel?.textColor = UIColor.fontColor
         cell.backgroundColor = UIColor.init(named: "BGColor")
-        cell.layer.addBorder([.bottom], color: UIColor.init(named: "lineColor") ?? .fontColor, width: 1.0)
-        cell.layer.addBorder([.top], color: UIColor.init(named: "lineColor2") ?? .fontColor, width: 1.0)
+        cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         
-        let switchView = UISwitch(frame: .zero)
-        switchView.onTintColor = .mainColor
-        switchView.setOn(false, animated: true)
-        switchView.tag = indexPath.row
-        switchView.addTarget(self, action: #selector(switchChanged), for: .valueChanged)
+        // switch
+//        let modeSwitch = UISwitch(frame: .zero)
+//        modeSwitch.onTintColor = .mainColor
+//        modeSwitch.setOn(false, animated: true)
+//        modeSwitch.addTarget(self, action: #selector(modeSwitchChanged), for: .valueChanged)
+//        
+//        let alarmSwitch = UISwitch(frame: .zero)
+//        alarmSwitch.onTintColor = .mainColor
+//        alarmSwitch.setOn(false, animated: true)
+//        alarmSwitch.addTarget(self, action: #selector(alarmSwitchChanged), for: .valueChanged)
         
-        if indexPath[0] == 0 {
-            cell.accessoryView = switchView
+        // get Version
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String
+        let versionLabel = UILabel()
+        versionLabel.text = version
+        versionLabel.font = UIFont.Roboto(type: .Regular, size: 16)
+        versionLabel.textColor = UIColor.fontColor
+        versionLabel.sizeToFit()
+        
+        if indexPath[0] == 0 && indexPath[1] == 0 {
+            cell.accessoryView = modeSwitch
+        } else if indexPath[0] == 0 && indexPath[1] == 1 {
+            cell.accessoryView = alarmSwitch
         } else {
-            let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as! String
-            
-            let versionLabel = UILabel()
-            versionLabel.text = version
-            versionLabel.font = UIFont.Roboto(type: .Regular, size: 16)
-            versionLabel.textColor = UIColor.fontColor
-            
             cell.accessoryView = versionLabel
         }
+        
+//        cell.accessoryView = indexPath[0] == 0 ? modeSwitch : versionLabel
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 56
+        return 64
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 56
+        return 48
     }
 }

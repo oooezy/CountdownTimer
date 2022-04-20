@@ -7,15 +7,34 @@ class ViewController: UIViewController {
         let table = UITableView()
         
         table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        table.separatorStyle = .none
         table.backgroundColor = UIColor.init(named: "BGColor")
         table.translatesAutoresizingMaskIntoConstraints = false
-        
+
         if #available(iOS 15.0, *) {
             table.sectionHeaderTopPadding = 1
         }
-        
+
         return table
+    }()
+    
+    lazy var modeSwitch: UISwitch = {
+        let modeSwitch = UISwitch(frame: .zero)
+        
+        modeSwitch.onTintColor = .mainColor
+        modeSwitch.setOn(false, animated: true)
+        modeSwitch.addTarget(self, action: #selector(modeSwitchChanged(_:)), for: .valueChanged)
+        
+        return modeSwitch
+    }()
+    
+    lazy var alarmSwitch: UISwitch = {
+        let alarmSwitch = UISwitch(frame: .zero)
+        
+        alarmSwitch.onTintColor = .mainColor
+        alarmSwitch.setOn(false, animated: true)
+        alarmSwitch.addTarget(self, action: #selector(alarmSwitchChanged(_:)), for: .valueChanged)
+        
+        return alarmSwitch
     }()
     
     private let stackView: UIStackView = {
@@ -37,13 +56,13 @@ class ViewController: UIViewController {
         
         return imageView
     }()
-    
+ 
     private let startButton: UIButton = {
         let startButton = UIButton()
         
         startButton.backgroundColor = .mainColor
         startButton.setTitle("타이머 시작", for: .normal)
-        startButton.addTarget(ViewController.self, action: #selector(startButtonTapped), for: .touchUpInside)
+        startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
         startButton.contentEdgeInsets = UIEdgeInsets(top: 15, left: 54, bottom: 15, right: 54)
         startButton.layer.cornerRadius = 25
         startButton.layer.shadowColor = UIColor.mainColor.cgColor
@@ -127,9 +146,10 @@ class ViewController: UIViewController {
     
     // MARK: - Properties
     
-    private let shapeLayer = CAShapeLayer()
-    
+    var defaults = UserDefaults.standard
     var isAlarmButtonTapped: Bool = false
+    
+    private let shapeLayer = CAShapeLayer()
     
     lazy var pickerViewData: [[String]] = {
         let hours: [String] = Array(0...24).map { String($0) }
@@ -184,23 +204,44 @@ class ViewController: UIViewController {
         configureItems()
         navigationController?.navigationBar.tintColor = UIColor.fontColor
         
+        modeSwitch.isOn = defaults.bool(forKey: "darkModeState")
+        alarmSwitch.isOn = defaults.bool(forKey: "alarmState")
+        
+        if let window = UIApplication.shared.windows.first {
+            if #available(iOS 13.0, *) {
+                window.overrideUserInterfaceStyle = modeSwitch.isOn == true ? .dark : .light
+                defaults.set(modeSwitch.isOn, forKey: "darkModeState")
+            } else {
+                window.overrideUserInterfaceStyle = .light
+            }
+        }
 
-//        modeSwitch.isOn = defaults.bool(forKey: "darkModeState")
-//                
-//        if let window = UIApplication.shared.windows.first {
-//            if #available(iOS 13.0, *) {
-//                window.overrideUserInterfaceStyle = modeSwitch.isOn == true ? .dark : .light
-//                defaults.set(modeSwitch.isOn, forKey: "darkModeState")
-//            } else {
-//                window.overrideUserInterfaceStyle = .light
-//            }
-//        }
+        if alarmSwitch.isOn {
+            defaults.set(alarmSwitch.isOn, forKey: "alarmState")
+            isAlarmButtonTapped = true
+        }
+
+        setState()
+        
+        print("mode: \(modeSwitch.isOn)")
+        print("isAlarm : \(alarmSwitch.isOn)")
     }
-    
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.animationCircular()
     }
+    
+    private func setState() {
+        if let alarm = defaults.value(forKey: "alarmState"),
+           let mode = defaults.value(forKey: "darkModeState") {
+            alarmSwitch.isOn = alarm as! Bool
+            modeSwitch.isOn = mode as! Bool
+        } else {
+            alarmSwitch.isOn = false
+            modeSwitch.isOn = false
+        }
+      }
     
     private func setContraints() {
         let safeArea = self.view.safeAreaLayoutGuide
@@ -292,7 +333,6 @@ class ViewController: UIViewController {
         vc.title = "타이머"
         vc.view.backgroundColor = UIColor.init(named: "BGColor")
         navigationController?.pushViewController(vc, animated: true)
-        navigationController?.navigationBar.tintColor = UIColor.fontColor
         navigationItem.backButtonTitle = ""
         
         let safeArea = vc.view.safeAreaLayoutGuide
@@ -356,14 +396,17 @@ class ViewController: UIViewController {
 
     @objc func alarmButtonTapped() {
         if isAlarmButtonTapped == false {
+            defaults.set(alarmSwitch.isOn, forKey: "alarmState")
             isAlarmButtonTapped = true
-
+            alarmSwitch.setOn(true, animated: true)
+            
             let alert = UIAlertController(title: "알림", message: "알람이 설정되었어요", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "확인", style: UIAlertAction.Style.default))
             self.present(alert,animated: true,completion: nil)
         } else {
             isAlarmButtonTapped = false
-
+            alarmSwitch.setOn(false, animated: true)
+            
             let alert = UIAlertController(title: "알림", message: "알람이 해제되었어요", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "확인", style: UIAlertAction.Style.default))
             self.present(alert,animated: true,completion: nil)
@@ -388,23 +431,26 @@ class ViewController: UIViewController {
             table.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor)
         ])
     }
-
-    let defaults = UserDefaults.standard
     
-    @objc func switchChanged(_ sender : UISwitch!){
+    @objc func modeSwitchChanged(_ sender: UISwitch) {
         if let window = UIApplication.shared.windows.first {
             if #available(iOS 13.0, *) {
-                window.overrideUserInterfaceStyle = sender.tag == 0 && sender.isOn == true ? .dark : .light
-                defaults.set(sender.isOn, forKey: "darkModeState")
+                window.overrideUserInterfaceStyle = modeSwitch.isOn == true ? .dark : .light
+                defaults.set(modeSwitch.isOn, forKey: "darkModeState")
             } else {
                 window.overrideUserInterfaceStyle = .light
             }
         }
-        
-        if sender.tag == 1 && sender.isOn {
+    }
+    
+    @objc func alarmSwitchChanged(_ sender: UISwitch) {
+        if alarmSwitch.isOn {
+            defaults.set(alarmSwitch.isOn, forKey: "alarmState")
             isAlarmButtonTapped = true
+            print("알람설정 : \(alarmSwitch.isOn)")
         } else {
             isAlarmButtonTapped = false
+            print("알람해제 : \(alarmSwitch.isOn)")
         }
   }
 
