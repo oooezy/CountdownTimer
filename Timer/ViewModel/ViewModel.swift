@@ -4,7 +4,6 @@
 //
 //  Created by 이은지 on 2022/03/28.
 //
-
 import Foundation
 
 protocol CountdownTimerDelegate: AnyObject {
@@ -18,10 +17,9 @@ enum countdownTimerState {
     case reset
 }
 
-class CountdownTimer {
-    
+class ViewModel {
     weak var delegate: CountdownTimerDelegate?
-    
+    private(set) var state: countdownTimerState
     private var timer: Timer?
     private var stopTime: Date?
     
@@ -34,9 +32,6 @@ class CountdownTimer {
                 return 0
             }
         }
-     
-    
-    private(set) var state: countdownTimerState
     
     init() {
         timer = nil
@@ -67,7 +62,7 @@ class CountdownTimer {
         timer = nil
     }
 
-    func secondsToString(seconds: Int) -> String { 
+    func secondsToString(seconds: Int) -> String {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.hour, .minute, .second]
         formatter.zeroFormattingBehavior = .pad
@@ -77,7 +72,7 @@ class CountdownTimer {
         return formattedString
     }
     
-    private func updateTimer(timer: Timer) {
+    func updateTimer(timer: Timer) {
         if let stopTime = stopTime {
             let currentTime = Date()
             if currentTime <= stopTime {
@@ -91,4 +86,3 @@ class CountdownTimer {
         }
     }
 }
-

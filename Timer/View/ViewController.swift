@@ -57,19 +57,10 @@ class ViewController: UIViewController {
         return imageView
     }()
  
-    private let startButton: UIButton = {
+    private lazy var startButton: UIButton = {
         let startButton = UIButton()
-        
-        startButton.backgroundColor = .mainColor
-        startButton.setTitle("타이머 시작", for: .normal)
+        startButton.stateButtonUI(buttonTitle: "타이머 시작")
         startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
-        startButton.contentEdgeInsets = UIEdgeInsets(top: 15, left: 54, bottom: 15, right: 54)
-        startButton.layer.cornerRadius = 25
-        startButton.layer.shadowColor = UIColor.mainColor.cgColor
-        startButton.layer.shadowOpacity = 0.3
-        startButton.layer.shadowOffset = CGSize(width: 0, height: 6)
-        startButton.layer.shadowRadius = 8
-        startButton.translatesAutoresizingMaskIntoConstraints = false
         
         return startButton
     }()
@@ -77,16 +68,8 @@ class ViewController: UIViewController {
     private lazy var stopButton: UIButton = {
         let stopButton = UIButton()
 
-        stopButton.backgroundColor = .mainColor
-        stopButton.setTitle("타이머 종료", for: .normal)
+        stopButton.stateButtonUI(buttonTitle: "타이머 종료")
         stopButton.addTarget(self, action: #selector(stopButtonTapped), for: .touchUpInside)
-        stopButton.contentEdgeInsets = UIEdgeInsets(top: 15, left: 54, bottom: 15, right: 54)
-        stopButton.layer.cornerRadius = 25
-        stopButton.layer.shadowColor = UIColor.mainColor.cgColor
-        stopButton.layer.shadowOpacity = 0.3
-        stopButton.layer.shadowOffset = CGSize(width: 0, height: 6)
-        stopButton.layer.shadowRadius = 8
-        stopButton.translatesAutoresizingMaskIntoConstraints = false
 
         return stopButton
     }()
@@ -94,14 +77,8 @@ class ViewController: UIViewController {
     private lazy var resetButton: UIButton = {
         let resetButton = UIButton()
         
-        resetButton.setImage(UIImage(named: "resetButton.png"), for: .normal)
-        resetButton.contentMode = .scaleAspectFit
+        resetButton.circleButtonUI(image: "resetButton")
         resetButton.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
-        resetButton.layer.shadowColor = UIColor.mainColor.cgColor
-        resetButton.layer.shadowOpacity = 0.3
-        resetButton.layer.shadowOffset = CGSize(width: 0, height: 5)
-        resetButton.layer.shadowRadius = 4
-        resetButton.translatesAutoresizingMaskIntoConstraints = false
         
         return resetButton
     }()
@@ -109,14 +86,8 @@ class ViewController: UIViewController {
     private lazy var alarmButton: UIButton = {
         let alarmButton = UIButton()
         
-        alarmButton.setImage(UIImage(named: "alarmButton.png"), for: .normal)
-        alarmButton.contentMode = .scaleAspectFit
+        alarmButton.circleButtonUI(image: "alarmButton")
         alarmButton.addTarget(self, action: #selector(alarmButtonTapped), for: .touchUpInside)
-        alarmButton.layer.shadowColor = UIColor.mainColor.cgColor
-        alarmButton.layer.shadowOpacity = 0.3
-        alarmButton.layer.shadowOffset = CGSize(width: 0, height: 5)
-        alarmButton.layer.shadowRadius = 4
-        alarmButton.translatesAutoresizingMaskIntoConstraints = false
         
         return alarmButton
     }()
@@ -145,11 +116,11 @@ class ViewController: UIViewController {
 
     
     // MARK: - Properties
-    
     var defaults = UserDefaults.standard
     var isAlarmButtonTapped: Bool = false
     
     private let shapeLayer = CAShapeLayer()
+    let countdownTimer = ViewModel()
     
     lazy var pickerViewData: [[String]] = {
         let hours: [String] = Array(0...24).map { String($0) }
@@ -173,20 +144,19 @@ class ViewController: UIViewController {
         return totalSeconds
     }
     
-    let countdownTimer = CountdownTimer()
-    
     let settingList: [String] = ["다크모드 설정", "알람 설정"]
     let etcList: [String] = ["버전"]
     
     // MARK: - View Lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.view.backgroundColor = UIColor.init(named: "BGColor")
         
-        navigationBar()
+        navigationUI()
         setContraints()
+        
+        table.delegate = self
+        table.dataSource = self
         
         pickerView.delegate = self
         pickerView.dataSource = self
@@ -197,12 +167,8 @@ class ViewController: UIViewController {
         countdownTimer.duration = duration
         countdownTimer.delegate = self
         
-        table.delegate = self
-        table.dataSource = self
-        
         updateViews()
-        configureItems()
-        navigationController?.navigationBar.tintColor = UIColor.fontColor
+        setState()
         
         modeSwitch.isOn = defaults.bool(forKey: "darkModeState")
         alarmSwitch.isOn = defaults.bool(forKey: "alarmState")
@@ -213,6 +179,7 @@ class ViewController: UIViewController {
                 defaults.set(modeSwitch.isOn, forKey: "darkModeState")
             } else {
                 window.overrideUserInterfaceStyle = .light
+                defaults.set(false, forKey: "darkModeState")
             }
         }
 
@@ -220,8 +187,6 @@ class ViewController: UIViewController {
             defaults.set(alarmSwitch.isOn, forKey: "alarmState")
             isAlarmButtonTapped = true
         }
-
-        setState()
         
         print("mode: \(modeSwitch.isOn)")
         print("isAlarm : \(alarmSwitch.isOn)")
@@ -279,15 +244,6 @@ class ViewController: UIViewController {
         createStackView()
     }
     
-    private func configureItems() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: "settingButton.svg"),
-            style: .done,
-            target: self,
-            action: #selector(settingButtonTapped)
-        )
-    }
-    
     func updateViews() {
         switch countdownTimer.state {
         case .started:
@@ -315,21 +271,26 @@ class ViewController: UIViewController {
         }
     }
     
-    func navigationBar() {
+    func navigationUI() {
         let navBar = self.navigationController!.navigationBar
         navBar.setBackgroundImage(UIImage(), for: .default)
         navBar.shadowImage = UIImage()
         navBar.isTranslucent = true
         navBar.titleTextAttributes = [.foregroundColor: UIColor.fontColor]
+        navBar.tintColor = UIColor.fontColor
         
         self.navigationItem.title = "타이머"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            image: UIImage(named: "settingButton.svg"),
+            style: .done,
+            target: self,
+            action: #selector(settingButtonTapped)
+        )
     }
     
     // MARK: - objc
-    
     @objc func startButtonTapped() {
         let vc = UIViewController()
-        
         vc.title = "타이머"
         vc.view.backgroundColor = UIColor.init(named: "BGColor")
         navigationController?.pushViewController(vc, animated: true)
@@ -396,33 +357,26 @@ class ViewController: UIViewController {
 
     @objc func alarmButtonTapped() {
         if isAlarmButtonTapped == false {
-            defaults.set(alarmSwitch.isOn, forKey: "alarmState")
             isAlarmButtonTapped = true
             alarmSwitch.setOn(true, animated: true)
-            
-            let alert = UIAlertController(title: "알림", message: "알람이 설정되었어요", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "확인", style: UIAlertAction.Style.default))
-            self.present(alert,animated: true,completion: nil)
+            defaults.set(alarmSwitch.isOn, forKey: "alarmState")
+            presentAlert(message: "알람이 설정되었어요")
         } else {
             isAlarmButtonTapped = false
             alarmSwitch.setOn(false, animated: true)
-            
-            let alert = UIAlertController(title: "알림", message: "알람이 해제되었어요", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "확인", style: UIAlertAction.Style.default))
-            self.present(alert,animated: true,completion: nil)
+            defaults.set(false, forKey: "alarmState")
+            presentAlert(message: "알람이 해제되었어요")
         }
     }
     
     @objc func settingButtonTapped() {
         let vc = UIViewController()
-        
         vc.title = "설정"
         vc.view.backgroundColor = UIColor.init(named: "BGColor")
         navigationController?.pushViewController(vc, animated: true)
         navigationItem.backButtonTitle = ""
         
         let safeArea = vc.view.safeAreaLayoutGuide
-        
         vc.view.addSubview(table)
         NSLayoutConstraint.activate([
             table.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
@@ -439,22 +393,21 @@ class ViewController: UIViewController {
                 defaults.set(modeSwitch.isOn, forKey: "darkModeState")
             } else {
                 window.overrideUserInterfaceStyle = .light
+                defaults.set(false, forKey: "darkModeState")
             }
         }
     }
     
     @objc func alarmSwitchChanged(_ sender: UISwitch) {
         if alarmSwitch.isOn {
-            defaults.set(alarmSwitch.isOn, forKey: "alarmState")
             isAlarmButtonTapped = true
-            print("알람설정 : \(alarmSwitch.isOn)")
+            defaults.set(alarmSwitch.isOn, forKey: "alarmState")
         } else {
             isAlarmButtonTapped = false
-            print("알람해제 : \(alarmSwitch.isOn)")
+            defaults.set(false, forKey: "alarmState")
         }
   }
 
-    
     // MARK: - Animation
     func animationCircular() {
         let center = CGPoint(x: shapeView.frame.size.width / 2, y: shapeView.frame.size.height / 2)
@@ -493,9 +446,7 @@ extension ViewController: CountdownTimerDelegate {
         stopButton.setTitle("타이머 시작", for: .normal)
         
         if isAlarmButtonTapped == true {
-            let alert = UIAlertController(title: "알림", message: "시간이 다됐어요! 🙌🏻", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "확인", style: UIAlertAction.Style.default))
-            self.present(alert,animated: true,completion: nil)
+            presentAlert(message: "시간이 다됐어요! 🙌🏻")
         }
     }
     
@@ -503,5 +454,3 @@ extension ViewController: CountdownTimerDelegate {
         updateViews()
     }
 }
-
-

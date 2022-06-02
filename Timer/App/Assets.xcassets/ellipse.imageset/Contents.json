@@ -12,7 +12,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ringDark.svg",
+      "filename" : "darkRing.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -28,7 +28,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ringDark-1.svg",
+      "filename" : "darkRing-1.svg",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -44,7 +44,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ringDark-2.svg",
+      "filename" : "darkRing-2.svg",
       "idiom" : "universal",
       "scale" : "3x"
     }
