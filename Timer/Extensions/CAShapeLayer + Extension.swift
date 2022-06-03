@@ -8,7 +8,6 @@
 import UIKit
 
 extension CAShapeLayer {
-    
     func pauseAnimation() {
         if isPaused() == false {
             let pausedTime = convertTime(CACurrentMediaTime(), from: nil)

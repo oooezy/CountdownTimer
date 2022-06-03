@@ -26,6 +26,7 @@ class ViewModel {
     var duration: TimeInterval
     var timeRemaining: TimeInterval {
             if let stopTime = stopTime {
+                print(stopTime)
                 let timeRemaining = stopTime.timeIntervalSinceNow
                 return timeRemaining
             } else {

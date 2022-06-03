@@ -8,15 +8,16 @@
 import UIKit
 
 class TimerViewController: UIViewController {
+    private let viewModel = ViewModel()
     
     let shapeLayer = CAShapeLayer()
-    let countdownTimer = ViewModel()
-    var duration: TimeInterval = 0.0
+    var duration: TimeInterval = 30.0
     
+    // MARK: - UI
     lazy var stopButton: UIButton = {
         let stopButton = UIButton()
 
-        stopButton.stateButtonUI(buttonTitle: "타이머 종료")
+        stopButton.setStateButtonUI(buttonTitle: "타이머 종료")
         stopButton.addTarget(self, action: #selector(stopButtonTapped), for: .touchUpInside)
 
         return stopButton
@@ -25,7 +26,7 @@ class TimerViewController: UIViewController {
     lazy var resetButton: UIButton = {
         let resetButton = UIButton()
         
-        resetButton.circleButtonUI(image: "resetButton")
+        resetButton.setCircleButtonUI(image: "resetButton")
         resetButton.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
         
         return resetButton
@@ -34,7 +35,7 @@ class TimerViewController: UIViewController {
     lazy var alarmButton: UIButton = {
         let alarmButton = UIButton()
         
-        alarmButton.circleButtonUI(image: "alarmButton")
+        alarmButton.setCircleButtonUI(image: "alarmButton")
         alarmButton.addTarget(self, action: #selector(alarmButtonTapped), for: .touchUpInside)
         
         return alarmButton
@@ -60,19 +61,24 @@ class TimerViewController: UIViewController {
         return label
     }()
     
+    // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+    
         self.title = "타이머"
         self.view.backgroundColor = UIColor.init(named: "BGColor")
-        navigationItem.backButtonTitle = ""
-        countdownTimer.delegate = self
+
+        viewModel.delegate = self
+        viewModel.duration = duration
         setContraints()
         
         if stopButton.currentTitle == "타이머 시작" {
             stopButton.setTitle("타이머 종료", for: .normal)
         }
         
+        viewModel.start()
+        updateViews()
+        basicAnimation()
     }
     
     override func viewDidLayoutSubviews() {
@@ -80,13 +86,14 @@ class TimerViewController: UIViewController {
         self.animationCircular()
     }
     
+    // MARK: - Private
     private func setContraints() {
         let safeArea = self.view.safeAreaLayoutGuide
         
         view.addSubview(stopButton)
         NSLayoutConstraint.activate([
             stopButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -70),
-            stopButton.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor)
+            stopButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
         ])
 
         view.addSubview(resetButton)
@@ -103,8 +110,8 @@ class TimerViewController: UIViewController {
 
         view.addSubview(shapeView)
         NSLayoutConstraint.activate([
-            shapeView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
-            shapeView.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor)
+            shapeView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            shapeView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)
         ])
         
         shapeView.addSubview(timeLabel)
@@ -115,21 +122,22 @@ class TimerViewController: UIViewController {
     }
     
     func updateViews() {
-        switch countdownTimer.state {
+        switch viewModel.state {
         case .started:
-            timeLabel.text = countdownTimer.secondsToString(seconds: Int(countdownTimer.timeRemaining))
+            timeLabel.text = viewModel.secondsToString(seconds: Int(viewModel.timeRemaining))
         case .stopped:
-            timeLabel.text = countdownTimer.secondsToString(seconds: 0)
+            timeLabel.text = viewModel.secondsToString(seconds: 0)
         case .reset:
-            timeLabel.text = countdownTimer.secondsToString(seconds: Int(countdownTimer.timeRemaining))
+            timeLabel.text = viewModel.secondsToString(seconds: Int(viewModel.timeRemaining))
         }
     }
     
+    // MARK: - objc
     @objc func stopButtonTapped() {
         if stopButton.currentTitle == "타이머 종료" {
             self.navigationController?.popViewController(animated: true)
         } else {
-            countdownTimer.start()
+            viewModel.start()
             updateViews()
             basicAnimation()
             stopButton.setTitle("타이머 종료", for: .normal)
@@ -137,21 +145,22 @@ class TimerViewController: UIViewController {
     }
 
     @objc func resetButtonTapped() {
-        countdownTimer.reset()
+        viewModel.reset()
         updateViews()
         shapeLayer.resetAnimation()
         stopButton.setTitle("타이머 시작", for: .normal)
     }
 
     @objc func alarmButtonTapped() {
+        let SettingVC = SettingViewController()
         if isAlarmButtonTapped == false {
             isAlarmButtonTapped = true
-            alarmSwitch.setOn(true, animated: true)
-            defaults.set(alarmSwitch.isOn, forKey: "alarmState")
+            SettingVC.alarmSwitch.setOn(true, animated: true)
+            defaults.set(SettingVC.alarmSwitch.isOn, forKey: "alarmState")
             presentAlert(message: "알람이 설정되었어요")
         } else {
             isAlarmButtonTapped = false
-            alarmSwitch.setOn(false, animated: true)
+            SettingVC.alarmSwitch.setOn(false, animated: true)
             defaults.set(false, forKey: "alarmState")
             presentAlert(message: "알람이 해제되었어요")
         }
@@ -180,7 +189,6 @@ class TimerViewController: UIViewController {
 
     func basicAnimation() {
         let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
-
         basicAnimation.toValue = 0
         basicAnimation.duration = CFTimeInterval(duration)
         basicAnimation.fillMode = CAMediaTimingFillMode.forwards
@@ -189,6 +197,7 @@ class TimerViewController: UIViewController {
     }
 }
 
+// MARK: - Extension
 extension TimerViewController: CountdownTimerDelegate {
     func timerDidFinish() {
         updateViews()

@@ -8,7 +8,7 @@
 import UIKit
 
 extension UIButton {
-    func stateButtonUI(buttonTitle: String) {
+    func setStateButtonUI(buttonTitle: String) {
         let button = self
         button.setTitle(buttonTitle, for: .normal)
         button.backgroundColor = .mainColor
@@ -21,7 +21,7 @@ extension UIButton {
         button.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    func circleButtonUI(image: String) {
+    func setCircleButtonUI(image: String) {
         let button = self
         button.setImage(UIImage(named: "\(image).png"), for: .normal)
         button.contentMode = .scaleAspectFit

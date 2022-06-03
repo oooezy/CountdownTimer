@@ -15,11 +15,15 @@
 		C003874527DF7CD9006F418F /* Roboto-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C003874227DF7CD9006F418F /* Roboto-Light.ttf */; };
 		C003874627DF7CD9006F418F /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C003874327DF7CD9006F418F /* Roboto-Regular.ttf */; };
 		C003874727DF7CD9006F418F /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C003874427DF7CD9006F418F /* Roboto-Medium.ttf */; };
+		C044A2E12849C4E800FA7DCB /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = C044A2E02849C4E800FA7DCB /* Model.swift */; };
+		C044A2E32849C74E00FA7DCB /* TimerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C044A2E22849C74E00FA7DCB /* TimerViewController.swift */; };
+		C044A2E52849CD2C00FA7DCB /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C044A2E42849CD2C00FA7DCB /* SettingViewController.swift */; };
+		C044A2E72849EBDC00FA7DCB /* UILabel + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C044A2E62849EBDC00FA7DCB /* UILabel + Extension.swift */; };
+		C044A2E92849ED2900FA7DCB /* UISwitch + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C044A2E82849ED2900FA7DCB /* UISwitch + Extension.swift */; };
 		C0728E9B280E9759001517F5 /* CALayer + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0728E9A280E9759001517F5 /* CALayer + Extension.swift */; };
 		C076DF9327F1AD3000EAB555 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C076DF9227F1AD3000EAB555 /* ViewModel.swift */; };
 		C0B1B19727E1B0540017CB22 /* UIColor + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B1B19627E1B0540017CB22 /* UIColor + Extension.swift */; };
 		C0B1B19B27E1B4BF0017CB22 /* UIFont + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B1B19A27E1B4BF0017CB22 /* UIFont + Extension.swift */; };
-		C0B1B1A227E2140A0017CB22 /* ViewController + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B1B1A127E2140A0017CB22 /* ViewController + Extension.swift */; };
 		C0B1B1A827E330CE0017CB22 /* CAShapeLayer + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B1B1A727E330CE0017CB22 /* CAShapeLayer + Extension.swift */; };
 		C0F8919A2849141300046323 /* UIButton + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F891992849141300046323 /* UIButton + Extension.swift */; };
 		C0F8919C28491A0800046323 /* UIViewController + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0F8919B28491A0800046323 /* UIViewController + Extension.swift */; };
@@ -36,11 +40,15 @@
 		C003874227DF7CD9006F418F /* Roboto-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Light.ttf"; sourceTree = "<group>"; };
 		C003874327DF7CD9006F418F /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		C003874427DF7CD9006F418F /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
+		C044A2E02849C4E800FA7DCB /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		C044A2E22849C74E00FA7DCB /* TimerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerViewController.swift; sourceTree = "<group>"; };
+		C044A2E42849CD2C00FA7DCB /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
+		C044A2E62849EBDC00FA7DCB /* UILabel + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel + Extension.swift"; sourceTree = "<group>"; };
+		C044A2E82849ED2900FA7DCB /* UISwitch + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UISwitch + Extension.swift"; sourceTree = "<group>"; };
 		C0728E9A280E9759001517F5 /* CALayer + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer + Extension.swift"; sourceTree = "<group>"; };
 		C076DF9227F1AD3000EAB555 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		C0B1B19627E1B0540017CB22 /* UIColor + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + Extension.swift"; sourceTree = "<group>"; };
 		C0B1B19A27E1B4BF0017CB22 /* UIFont + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont + Extension.swift"; sourceTree = "<group>"; };
-		C0B1B1A127E2140A0017CB22 /* ViewController + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController + Extension.swift"; sourceTree = "<group>"; };
 		C0B1B1A727E330CE0017CB22 /* CAShapeLayer + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CAShapeLayer + Extension.swift"; sourceTree = "<group>"; };
 		C0F891992849141300046323 /* UIButton + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton + Extension.swift"; sourceTree = "<group>"; };
 		C0F8919B28491A0800046323 /* UIViewController + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController + Extension.swift"; sourceTree = "<group>"; };
@@ -78,6 +86,7 @@
 			children = (
 				C0B1B19527E1B0310017CB22 /* Extensions */,
 				C003874127DF7C51006F418F /* Fonts */,
+				C044A2DF2849C4D900FA7DCB /* Model */,
 				C003871327DEE4BC006F418F /* View */,
 				C0FA7B642848F5CA00907D75 /* ViewModel */,
 				C003871227DEE492006F418F /* App */,
@@ -100,8 +109,9 @@
 		C003871327DEE4BC006F418F /* View */ = {
 			isa = PBXGroup;
 			children = (
-				C076DF9227F1AD3000EAB555 /* ViewModel.swift */,
 				C003870127DEE457006F418F /* ViewController.swift */,
+				C044A2E22849C74E00FA7DCB /* TimerViewController.swift */,
+				C044A2E42849CD2C00FA7DCB /* SettingViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -116,16 +126,25 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
+		C044A2DF2849C4D900FA7DCB /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				C044A2E02849C4E800FA7DCB /* Model.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		C0B1B19527E1B0310017CB22 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				C0B1B19627E1B0540017CB22 /* UIColor + Extension.swift */,
 				C0B1B19A27E1B4BF0017CB22 /* UIFont + Extension.swift */,
-				C0B1B1A127E2140A0017CB22 /* ViewController + Extension.swift */,
+				C0F891992849141300046323 /* UIButton + Extension.swift */,
+				C044A2E62849EBDC00FA7DCB /* UILabel + Extension.swift */,
+				C044A2E82849ED2900FA7DCB /* UISwitch + Extension.swift */,
+				C0F8919B28491A0800046323 /* UIViewController + Extension.swift */,
 				C0B1B1A727E330CE0017CB22 /* CAShapeLayer + Extension.swift */,
 				C0728E9A280E9759001517F5 /* CALayer + Extension.swift */,
-				C0F891992849141300046323 /* UIButton + Extension.swift */,
-				C0F8919B28491A0800046323 /* UIViewController + Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -133,6 +152,7 @@
 		C0FA7B642848F5CA00907D75 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				C076DF9227F1AD3000EAB555 /* ViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -212,12 +232,16 @@
 				C0F8919C28491A0800046323 /* UIViewController + Extension.swift in Sources */,
 				C0B1B19B27E1B4BF0017CB22 /* UIFont + Extension.swift in Sources */,
 				C003870227DEE457006F418F /* ViewController.swift in Sources */,
+				C044A2E32849C74E00FA7DCB /* TimerViewController.swift in Sources */,
+				C044A2E12849C4E800FA7DCB /* Model.swift in Sources */,
+				C044A2E52849CD2C00FA7DCB /* SettingViewController.swift in Sources */,
+				C044A2E72849EBDC00FA7DCB /* UILabel + Extension.swift in Sources */,
 				C0B1B19727E1B0540017CB22 /* UIColor + Extension.swift in Sources */,
 				C0B1B1A827E330CE0017CB22 /* CAShapeLayer + Extension.swift in Sources */,
 				C076DF9327F1AD3000EAB555 /* ViewModel.swift in Sources */,
 				C0F8919A2849141300046323 /* UIButton + Extension.swift in Sources */,
 				C00386FE27DEE457006F418F /* AppDelegate.swift in Sources */,
-				C0B1B1A227E2140A0017CB22 /* ViewController + Extension.swift in Sources */,
+				C044A2E92849ED2900FA7DCB /* UISwitch + Extension.swift in Sources */,
 				C003870027DEE457006F418F /* SceneDelegate.swift in Sources */,
 				C0728E9B280E9759001517F5 /* CALayer + Extension.swift in Sources */,
 			);
