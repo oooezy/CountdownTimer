@@ -11,12 +11,6 @@ protocol CountdownTimerDelegate: AnyObject {
     func timerDidFinish()
 }
 
-enum countdownTimerState {
-    case started
-    case stopped
-    case reset
-}
-
 class ViewModel {
     weak var delegate: CountdownTimerDelegate?
     private(set) var state: countdownTimerState

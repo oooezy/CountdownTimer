@@ -7,3 +7,8 @@
 
 import Foundation
 
+public enum countdownTimerState {
+    case started
+    case stopped
+    case reset
+}
