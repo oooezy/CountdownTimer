@@ -1,7 +1,7 @@
 # ⏰ 타이머 : Countdown Timer
 ![Badge](https://img.shields.io/badge/language-swift5.6-blue) 
 ![Badge](https://img.shields.io/badge/platform-iOS14+-yellow) 
-![Badge](https://img.shields.io/badge/version-1.2-green)
+![Badge](https://img.shields.io/badge/version-1.1.1-green)
 
 ![thumb](https://user-images.githubusercontent.com/95845594/164694258-51dbfa7d-8a6a-4567-b331-757899783906.png)
 
