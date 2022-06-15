@@ -1,44 +1,40 @@
 import UIKit
+import RxCocoa
+import RxSwift
 
 var defaults = UserDefaults.standard
 var isAlarmButtonTapped: Bool = false
 
-class ViewController: UIViewController {    
+class ViewController: UIViewController {
     private let viewModel = ViewModel()
-    
+    var disposeBag: DisposeBag = DisposeBag()
+
     let timerVC = TimerViewController()
     let settingVC = SettingViewController()
     
     // MARK: - UI
     private let stackView: UIStackView = {
         let stackView = UIStackView()
-        
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        
         return stackView
     }()
     
     private let line: UIImageView = {
         let imageView = UIImageView()
-        
         let image = UIImage(named: "line.svg")
         imageView.image = image
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        
         return imageView
     }()
  
-    private lazy var startButton: UIButton = {
+    private lazy var  startButton: UIButton = {
         let startButton = UIButton()
         startButton.setStateButtonUI(buttonTitle: "타이머 시작")
         startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
-        
         return startButton
     }()
     
-    private lazy var pickerView = UIPickerView()
+    private let pickerView = UIPickerView()
 
     // MARK: - Properties
     lazy var pickerViewData: [[String]] = {
@@ -68,7 +64,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.init(named: "BGColor")
         
-        navigationUI()
+        configureNavigation()
         setContraints()
         
         pickerView.delegate = self
@@ -76,8 +72,6 @@ class ViewController: UIViewController {
         
         pickerView.selectRow(0, inComponent: 2, animated: false)
         pickerView.selectRow(30, inComponent: 4, animated: false)
-        
-        timerVC.updateViews()
         
         settingVC.modeSwitch.isOn = defaults.bool(forKey: "darkModeState")
         settingVC.alarmSwitch.isOn = defaults.bool(forKey: "alarmState")
@@ -102,27 +96,26 @@ class ViewController: UIViewController {
     private func setContraints() {
         let safeArea = self.view.safeAreaLayoutGuide
         
-        view.addSubview(stackView)
+        [stackView, line, startButton, pickerView].forEach({view.addSubview($0)})
+        [stackView, line, pickerView].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
+
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 70),
             stackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor,constant: 16),
             stackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16)
         ])
         
-        view.addSubview(line)
         NSLayoutConstraint.activate([
             line.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 20),
             line.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 16),
             line.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16)
         ])
         
-        view.addSubview(startButton)
         NSLayoutConstraint.activate([
             startButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -70),
             startButton.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor)
         ])
-        
-        view.addSubview(pickerView)
+
         NSLayoutConstraint.activate([
             pickerView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
             pickerView.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
@@ -130,17 +123,15 @@ class ViewController: UIViewController {
             pickerView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
             pickerView.heightAnchor.constraint(equalToConstant: 350)
         ])
-        pickerView.translatesAutoresizingMaskIntoConstraints = false
         
         createStackView()
     }
     
-    func createStackView() {
+    private func createStackView() {
         let timerTitle = ["Hours", "Minutes", "Seconds"]
         
         for title in timerTitle {
             let label = UILabel()
-            
             label.setLabelUI(text: title, type: .Regular, size: 18)
             label.translatesAutoresizingMaskIntoConstraints = false
             label.textAlignment = .center
@@ -149,7 +140,7 @@ class ViewController: UIViewController {
         }
     }
     
-    func navigationUI() {
+    private func configureNavigation() {
         let navBar = self.navigationController!.navigationBar
         navBar.setBackgroundImage(UIImage(), for: .default)
         navBar.shadowImage = UIImage()
@@ -157,7 +148,7 @@ class ViewController: UIViewController {
         navBar.titleTextAttributes = [.foregroundColor: UIColor.fontColor]
         navBar.tintColor = UIColor.fontColor
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
+        navigationItem.leftBarButtonItem = UIBarButtonItem (
             image: UIImage(named: "settingButton.svg"),
             style: .done,
             target: self,
@@ -214,6 +205,5 @@ extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         pickerView.reloadComponent(component)
         viewModel.duration = duration
-        timerVC.updateViews()
     }
 }

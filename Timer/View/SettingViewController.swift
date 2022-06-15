@@ -15,15 +15,14 @@ class SettingViewController: UIViewController {
     // MARK: - UI
     let table: UITableView = {
         let table = UITableView()
-        
         table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         table.backgroundColor = UIColor.init(named: "BGColor")
         table.translatesAutoresizingMaskIntoConstraints = false
-
+        
         if #available(iOS 15.0, *) {
             table.sectionHeaderTopPadding = 1
         }
-
+        
         return table
     }()
     
@@ -31,7 +30,6 @@ class SettingViewController: UIViewController {
         let modeSwitch = UISwitch(frame: .zero)
         modeSwitch.setSwitchUI()
         modeSwitch.addTarget(self, action: #selector(modeSwitchChanged(_:)), for: .valueChanged)
-        
         return modeSwitch
     }()
     
@@ -39,7 +37,6 @@ class SettingViewController: UIViewController {
         let alarmSwitch = UISwitch(frame: .zero)
         alarmSwitch.setSwitchUI()
         alarmSwitch.addTarget(self, action: #selector(alarmSwitchChanged(_:)), for: .valueChanged)
-        
         return alarmSwitch
     }()
     
@@ -60,6 +57,7 @@ class SettingViewController: UIViewController {
     // MARK: - Private
     private func setContraints() {
         let safeArea = self.view.safeAreaLayoutGuide
+        
         self.view.addSubview(table)
         NSLayoutConstraint.activate([
             table.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),

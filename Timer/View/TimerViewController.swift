@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RxSwift
 
 class TimerViewController: UIViewController {
     private let viewModel = ViewModel()
@@ -16,48 +17,37 @@ class TimerViewController: UIViewController {
     // MARK: - UI
     lazy var stopButton: UIButton = {
         let stopButton = UIButton()
-
         stopButton.setStateButtonUI(buttonTitle: "타이머 종료")
         stopButton.addTarget(self, action: #selector(stopButtonTapped), for: .touchUpInside)
-
         return stopButton
     }()
     
     lazy var resetButton: UIButton = {
         let resetButton = UIButton()
-        
         resetButton.setCircleButtonUI(image: "resetButton")
         resetButton.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
-        
         return resetButton
     }()
     
     lazy var alarmButton: UIButton = {
         let alarmButton = UIButton()
-        
         alarmButton.setCircleButtonUI(image: "alarmButton")
         alarmButton.addTarget(self, action: #selector(alarmButtonTapped), for: .touchUpInside)
-        
         return alarmButton
     }()
     
     lazy var shapeView: UIImageView = {
         let imageView = UIImageView()
-        
         imageView.image = UIImage.init(named: "ellipse.svg")
         imageView.frame = CGRect(x: 0, y: 0, width: 250, height: 250)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        
         return imageView
     }()
     
     lazy var timeLabel: UILabel = {
         var label = UILabel()
-        
         label.font = UIFont.Roboto(type: .Light, size: 40)
         label.textColor = .mainColor
-        label.translatesAutoresizingMaskIntoConstraints = false
-        
+
         return label
     }()
     
@@ -76,9 +66,14 @@ class TimerViewController: UIViewController {
             stopButton.setTitle("타이머 종료", for: .normal)
         }
         
+        timeLabel.text = viewModel.secondsToString(seconds: Int(duration))
         viewModel.start()
-        updateViews()
         basicAnimation()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        viewModel.cancelTimer()
+        super.viewWillDisappear(animated)
     }
     
     override func viewDidLayoutSubviews() {
@@ -90,55 +85,51 @@ class TimerViewController: UIViewController {
     private func setContraints() {
         let safeArea = self.view.safeAreaLayoutGuide
         
-        view.addSubview(stopButton)
+        [stopButton, resetButton, alarmButton, shapeView, timeLabel].forEach({view.addSubview($0)})
+        [shapeView, timeLabel].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
+        
         NSLayoutConstraint.activate([
             stopButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -70),
             stopButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
         ])
 
-        view.addSubview(resetButton)
         NSLayoutConstraint.activate([
             resetButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -72),
             resetButton.trailingAnchor.constraint(equalTo: stopButton.leadingAnchor, constant: -16)
         ])
 
-        view.addSubview(alarmButton)
         NSLayoutConstraint.activate([
             alarmButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -72),
             alarmButton.leadingAnchor.constraint(equalTo: stopButton.trailingAnchor, constant: 16)
         ])
-
-        view.addSubview(shapeView)
+        
         NSLayoutConstraint.activate([
             shapeView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             shapeView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)
         ])
         
-        shapeView.addSubview(timeLabel)
         NSLayoutConstraint.activate([
             timeLabel.centerXAnchor.constraint(equalTo: shapeView.centerXAnchor),
             timeLabel.centerYAnchor.constraint(equalTo: shapeView.centerYAnchor)
         ])
     }
     
-    func updateViews() {
+    func updateViews(timeRemaining: String) {
         switch viewModel.state {
-        case .started:
-            timeLabel.text = viewModel.secondsToString(seconds: Int(viewModel.timeRemaining))
+        case .started, .reset:
+            timeLabel.text = timeRemaining
         case .stopped:
-            timeLabel.text = viewModel.secondsToString(seconds: 0)
-        case .reset:
-            timeLabel.text = viewModel.secondsToString(seconds: Int(viewModel.timeRemaining))
+            timeLabel.text = "00:00:00"
         }
     }
     
     // MARK: - objc
     @objc func stopButtonTapped() {
         if stopButton.currentTitle == "타이머 종료" {
+            viewModel.cancelTimer()
             self.navigationController?.popViewController(animated: true)
         } else {
             viewModel.start()
-            updateViews()
             basicAnimation()
             stopButton.setTitle("타이머 종료", for: .normal)
         }
@@ -146,7 +137,7 @@ class TimerViewController: UIViewController {
 
     @objc func resetButtonTapped() {
         viewModel.reset()
-        updateViews()
+        timeLabel.text = viewModel.secondsToString(seconds: Int(duration))
         shapeLayer.resetAnimation()
         stopButton.setTitle("타이머 시작", for: .normal)
     }
@@ -200,7 +191,7 @@ class TimerViewController: UIViewController {
 // MARK: - Extension
 extension TimerViewController: CountdownTimerDelegate {
     func timerDidFinish() {
-        updateViews()
+        viewModel.cancelTimer()
         stopButton.setTitle("타이머 시작", for: .normal)
         
         if isAlarmButtonTapped == true {
@@ -208,7 +199,7 @@ extension TimerViewController: CountdownTimerDelegate {
         }
     }
     
-    func timerDidUpdate(timeRemaining: TimeInterval) {
-        updateViews()
+    func timerUpdate(timeRemaining: String) {
+        updateViews(timeRemaining: timeRemaining)
     }
 }

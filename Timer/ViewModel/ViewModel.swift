@@ -4,57 +4,54 @@
 //
 //  Created by 이은지 on 2022/03/28.
 //
-import Foundation
+
+import UIKit
+import RxCocoa
+import RxSwift
 
 protocol CountdownTimerDelegate: AnyObject {
-    func timerDidUpdate(timeRemaining: TimeInterval)
+    func timerUpdate(timeRemaining: String)
     func timerDidFinish()
 }
 
 class ViewModel {
     weak var delegate: CountdownTimerDelegate?
     private(set) var state: countdownTimerState
-    private var timer: Timer?
-    private var stopTime: Date?
-    
+
+    var disposeBag = DisposeBag()
     var duration: TimeInterval
-    var timeRemaining: TimeInterval {
-            if let stopTime = stopTime {
-                print(stopTime)
-                let timeRemaining = stopTime.timeIntervalSinceNow
-                return timeRemaining
-            } else {
-                return 0
-            }
-        }
     
     init() {
-        timer = nil
-        stopTime = nil
         duration = 0
         state = .reset
     }
-        
+    
     func runTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: updateTimer(timer:))
+        Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
+            .map { Int(self.duration) - ($0 + 1) }
+            .take(until: { $0 == 0 }, behavior: .inclusive)
+            .subscribe(onNext: { value in
+                let time = self.secondsToString(seconds: value)
+                self.delegate?.timerUpdate(timeRemaining: time)
+            }, onCompleted: {
+                self.delegate?.timerDidFinish()
+            })
+            .disposed(by: disposeBag)
     }
     
     func start() {
         cancelTimer()
-        runTimer()
-        stopTime = Date(timeIntervalSinceNow: duration)
         state = .started
+        runTimer()
    }
 
     func reset() {
         cancelTimer()
-        stopTime = nil
         state = .reset
     }
     
     func cancelTimer() {
-        timer?.invalidate()
-        timer = nil
+        disposeBag = DisposeBag()
     }
 
     func secondsToString(seconds: Int) -> String {
@@ -65,19 +62,5 @@ class ViewModel {
         
         let formattedString = formatter.string(from: TimeInterval(seconds))!
         return formattedString
-    }
-    
-    func updateTimer(timer: Timer) {
-        if let stopTime = stopTime {
-            let currentTime = Date()
-            if currentTime <= stopTime {
-                delegate?.timerDidUpdate(timeRemaining: timeRemaining)
-            } else {
-                state = .stopped
-                cancelTimer()
-                self.stopTime = nil
-                delegate?.timerDidFinish()
-            }
-        }
     }
 }
