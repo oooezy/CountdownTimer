@@ -30,6 +30,7 @@ class ViewController: UIViewController {
     private lazy var  startButton: UIButton = {
         let startButton = UIButton()
         startButton.setStateButtonUI(buttonTitle: "타이머 시작")
+        startButton.accessibilityIdentifier = "startButton"
         startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
         return startButton
     }()

@@ -18,6 +18,7 @@ class TimerViewController: UIViewController {
     lazy var stopButton: UIButton = {
         let stopButton = UIButton()
         stopButton.setStateButtonUI(buttonTitle: "타이머 종료")
+        stopButton.accessibilityIdentifier = "stopButton"
         stopButton.addTarget(self, action: #selector(stopButtonTapped), for: .touchUpInside)
         return stopButton
     }()
@@ -193,10 +194,12 @@ extension TimerViewController: CountdownTimerDelegate {
     func timerDidFinish() {
         viewModel.cancelTimer()
         stopButton.setTitle("타이머 시작", for: .normal)
-        
+
         if isAlarmButtonTapped == true {
             presentAlert(message: "시간이 다됐어요! 🙌🏻")
         }
+        
+        timeLabel.text = viewModel.secondsToString(seconds: Int(duration))
     }
     
     func timerUpdate(timeRemaining: String) {
