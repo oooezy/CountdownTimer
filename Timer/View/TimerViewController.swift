@@ -17,7 +17,7 @@ class TimerViewController: UIViewController {
     // MARK: - UI
     lazy var stopButton: UIButton = {
         let stopButton = UIButton()
-        stopButton.setStateButtonUI(buttonTitle: "타이머 종료")
+        stopButton.setStateButtonUI(buttonTitle: "일시 정지")
         stopButton.accessibilityIdentifier = "stopButton"
         stopButton.addTarget(self, action: #selector(stopButtonTapped), for: .touchUpInside)
         return stopButton
@@ -64,7 +64,7 @@ class TimerViewController: UIViewController {
         setContraints()
         
         if stopButton.currentTitle == "타이머 시작" {
-            stopButton.setTitle("타이머 종료", for: .normal)
+            stopButton.setTitle("일시 정지", for: .normal)
         }
         
         timeLabel.text = viewModel.secondsToString(seconds: Int(duration))
@@ -121,18 +121,25 @@ class TimerViewController: UIViewController {
             timeLabel.text = timeRemaining
         case .stopped:
             timeLabel.text = "00:00:00"
+        case .paused:
+            timeLabel.text = viewModel.secondsToString(seconds: Int(viewModel.remainDuration))
         }
     }
     
     // MARK: - objc
     @objc func stopButtonTapped() {
-        if stopButton.currentTitle == "타이머 종료" {
-            viewModel.cancelTimer()
-            self.navigationController?.popViewController(animated: true)
-        } else {
+        if stopButton.currentTitle == "일시 정지" {
+            viewModel.pause()
+            shapeLayer.pauseAnimation()
+            stopButton.setTitle("다시 시작", for: .normal)
+        } else if stopButton.currentTitle == "다시 시작"  {
+            viewModel.restart()
+            shapeLayer.resumeAnimation()
+            stopButton.setTitle("일시 정지", for: .normal)
+        } else if stopButton.currentTitle == "타이머 시작" {
             viewModel.start()
             basicAnimation()
-            stopButton.setTitle("타이머 종료", for: .normal)
+            stopButton.setTitle("일시 정지", for: .normal)
         }
     }
 
@@ -205,4 +212,5 @@ extension TimerViewController: CountdownTimerDelegate {
     func timerUpdate(timeRemaining: String) {
         updateViews(timeRemaining: timeRemaining)
     }
+    
 }

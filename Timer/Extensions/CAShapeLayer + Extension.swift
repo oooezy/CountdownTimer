@@ -9,7 +9,7 @@ import UIKit
 
 extension CAShapeLayer {
     func pauseAnimation() {
-        if isPaused() == false {
+        if !isPaused() {
             let pausedTime = convertTime(CACurrentMediaTime(), from: nil)
             speed = 0.0
             timeOffset = pausedTime

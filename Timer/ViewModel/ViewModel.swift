@@ -20,10 +20,12 @@ class ViewModel {
 
     var disposeBag = DisposeBag()
     var duration: TimeInterval
+    var remainDuration: Int
     
     init() {
         duration = 0
         state = .reset
+        remainDuration = 0
     }
     
     func runTimer() {
@@ -31,6 +33,21 @@ class ViewModel {
             .map { Int(self.duration) - ($0 + 1) }
             .take(until: { $0 == 0 }, behavior: .inclusive)
             .subscribe(onNext: { value in
+                self.remainDuration = value
+                let time = self.secondsToString(seconds: value)
+                self.delegate?.timerUpdate(timeRemaining: time)
+            }, onCompleted: {
+                self.delegate?.timerDidFinish()
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    func replayTimer() {
+        Observable<Int>.interval(.seconds(1), scheduler: MainScheduler.instance)
+            .map { _ in Int(self.remainDuration) - 1 }
+            .take(until: { $0 == 0 }, behavior: .inclusive)
+            .subscribe(onNext: { value in
+                self.remainDuration = value
                 let time = self.secondsToString(seconds: value)
                 self.delegate?.timerUpdate(timeRemaining: time)
             }, onCompleted: {
@@ -44,6 +61,16 @@ class ViewModel {
         state = .started
         runTimer()
    }
+    
+    func pause() {
+        state = .paused
+        cancelTimer()
+    }
+    
+    func restart() {
+        replayTimer()
+        state = .started
+    }
 
     func reset() {
         cancelTimer()
