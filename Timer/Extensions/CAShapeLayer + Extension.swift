@@ -23,7 +23,7 @@ extension CAShapeLayer {
             timeOffset = 0.0
             beginTime = 0.0
             let timeSincePause = convertTime(CACurrentMediaTime(), from: nil) - pausedTime
-            beginTime = timeSincePause
+            beginTime = timeSincePause 
         }
     }
     

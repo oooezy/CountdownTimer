@@ -63,10 +63,6 @@ class TimerViewController: UIViewController {
         viewModel.duration = duration
         setContraints()
         
-        if stopButton.currentTitle == "타이머 시작" {
-            stopButton.setTitle("일시 정지", for: .normal)
-        }
-        
         timeLabel.text = viewModel.secondsToString(seconds: Int(duration))
         viewModel.start()
         basicAnimation()
@@ -144,10 +140,10 @@ class TimerViewController: UIViewController {
     }
 
     @objc func resetButtonTapped() {
-        viewModel.reset()
+        viewModel.start()
         timeLabel.text = viewModel.secondsToString(seconds: Int(duration))
-        shapeLayer.resetAnimation()
-        stopButton.setTitle("타이머 시작", for: .normal)
+        basicAnimation()
+        stopButton.setTitle("일시 정지", for: .normal)
     }
 
     @objc func alarmButtonTapped() {
