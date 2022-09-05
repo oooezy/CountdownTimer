@@ -1,6 +1,8 @@
 import UIKit
+
 import RxCocoa
 import RxSwift
+import Then
 
 var defaults = UserDefaults.standard
 var isAlarmButtonTapped: Bool = false
@@ -13,27 +15,21 @@ class ViewController: UIViewController {
     let settingVC = SettingViewController()
     
     // MARK: - UI
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.distribution = .fillEqually
-        return stackView
-    }()
+    private let stackView = UIStackView().then {
+        $0.axis = .horizontal
+        $0.distribution = .fillEqually
+    }
     
-    private let line: UIImageView = {
-        let imageView = UIImageView()
+    private let line = UIImageView().then {
         let image = UIImage(named: "line.svg")
-        imageView.image = image
-        return imageView
-    }()
+        $0.image = image
+    }
  
-    private lazy var  startButton: UIButton = {
-        let startButton = UIButton()
-        startButton.setStateButtonUI(buttonTitle: "타이머 시작")
-        startButton.accessibilityIdentifier = "startButton"
-        startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
-        return startButton
-    }()
+    private lazy var startButton = UIButton().then {
+        $0.setStateButtonUI(buttonTitle: "타이머 시작")
+        $0.accessibilityIdentifier = "startButton"
+        $0.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
+    }
     
     private let pickerView = UIPickerView()
 

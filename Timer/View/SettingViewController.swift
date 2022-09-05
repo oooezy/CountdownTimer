@@ -7,38 +7,33 @@
 
 import UIKit
 
+import Then
+
 class SettingViewController: UIViewController {
     
     let settingList: [String] = ["다크모드 설정", "알람 설정"]
     let etcList: [String] = ["버전"]
     
     // MARK: - UI
-    let table: UITableView = {
-        let table = UITableView()
-        table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        table.backgroundColor = UIColor.init(named: "BGColor")
-        table.translatesAutoresizingMaskIntoConstraints = false
+    let table = UITableView().then {
+        $0.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        $0.backgroundColor = UIColor.init(named: "BGColor")
+        $0.translatesAutoresizingMaskIntoConstraints = false
         
         if #available(iOS 15.0, *) {
-            table.sectionHeaderTopPadding = 1
+            $0.sectionHeaderTopPadding = 1
         }
-        
-        return table
-    }()
+    }
     
-    lazy var modeSwitch: UISwitch = {
-        let modeSwitch = UISwitch(frame: .zero)
-        modeSwitch.setSwitchUI()
-        modeSwitch.addTarget(self, action: #selector(modeSwitchChanged(_:)), for: .valueChanged)
-        return modeSwitch
-    }()
+    lazy var modeSwitch = UISwitch().then {
+        $0.setSwitchUI()
+        $0.addTarget(self, action: #selector(modeSwitchChanged(_:)), for: .valueChanged)
+    }
     
-    lazy var alarmSwitch: UISwitch = {
-        let alarmSwitch = UISwitch(frame: .zero)
-        alarmSwitch.setSwitchUI()
-        alarmSwitch.addTarget(self, action: #selector(alarmSwitchChanged(_:)), for: .valueChanged)
-        return alarmSwitch
-    }()
+    lazy var alarmSwitch = UISwitch().then {
+        $0.setSwitchUI()
+        $0.addTarget(self, action: #selector(alarmSwitchChanged(_:)), for: .valueChanged)
+    }
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {

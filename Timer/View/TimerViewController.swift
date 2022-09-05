@@ -6,8 +6,10 @@
 //
 
 import UIKit
-import RxSwift
+
 import AVFoundation
+import RxSwift
+import Then
 
 class TimerViewController: UIViewController {
     private let viewModel = ViewModel()
@@ -16,42 +18,31 @@ class TimerViewController: UIViewController {
     var duration: TimeInterval = 30.0
     
     // MARK: - UI
-    lazy var stopButton: UIButton = {
-        let stopButton = UIButton()
-        stopButton.setStateButtonUI(buttonTitle: "일시 정지")
-        stopButton.accessibilityIdentifier = "stopButton"
-        stopButton.addTarget(self, action: #selector(stopButtonTapped), for: .touchUpInside)
-        return stopButton
-    }()
+    lazy var stopButton = UIButton().then {
+        $0.setStateButtonUI(buttonTitle: "일시 정지")
+        $0.accessibilityIdentifier = "stopButton"
+        $0.addTarget(self, action: #selector(stopButtonTapped), for: .touchUpInside)
+    }
     
-    lazy var resetButton: UIButton = {
-        let resetButton = UIButton()
-        resetButton.setCircleButtonUI(image: "resetButton")
-        resetButton.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
-        return resetButton
-    }()
+    lazy var resetButton = UIButton().then {
+        $0.setCircleButtonUI(image: "resetButton")
+        $0.addTarget(self, action: #selector(resetButtonTapped), for: .touchUpInside)
+    }
     
-    lazy var alarmButton: UIButton = {
-        let alarmButton = UIButton()
-        alarmButton.setCircleButtonUI(image: "alarmButton")
-        alarmButton.addTarget(self, action: #selector(alarmButtonTapped), for: .touchUpInside)
-        return alarmButton
-    }()
+    lazy var alarmButton = UIButton().then {
+        $0.setCircleButtonUI(image: "alarmButton")
+        $0.addTarget(self, action: #selector(alarmButtonTapped), for: .touchUpInside)
+    }
     
-    lazy var shapeView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage.init(named: "ellipse.svg")
-        imageView.frame = CGRect(x: 0, y: 0, width: 250, height: 250)
-        return imageView
-    }()
+    lazy var shapeView = UIImageView().then {
+        $0.image = UIImage.init(named: "ellipse.svg")
+        $0.frame = CGRect(x: 0, y: 0, width: 250, height: 250)
+    }
     
-    lazy var timeLabel: UILabel = {
-        var label = UILabel()
-        label.font = UIFont.Roboto(type: .Light, size: 40)
-        label.textColor = .mainColor
-
-        return label
-    }()
+    lazy var timeLabel = UILabel().then {
+        $0.font = UIFont.Roboto(type: .Light, size: 40)
+        $0.textColor = .mainColor
+    }
     
     // MARK: - View Lifecycle
     override func viewDidLoad() {
