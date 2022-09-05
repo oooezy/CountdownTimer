@@ -9,6 +9,7 @@ import UIKit
 
 import AVFoundation
 import RxSwift
+import SnapKit
 import Then
 
 class TimerViewController: UIViewController {
@@ -75,32 +76,31 @@ class TimerViewController: UIViewController {
         let safeArea = self.view.safeAreaLayoutGuide
         
         [stopButton, resetButton, alarmButton, shapeView, timeLabel].forEach({view.addSubview($0)})
-        [shapeView, timeLabel].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
         
-        NSLayoutConstraint.activate([
-            stopButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -70),
-            stopButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
-        ])
-
-        NSLayoutConstraint.activate([
-            resetButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -72),
-            resetButton.trailingAnchor.constraint(equalTo: stopButton.leadingAnchor, constant: -16)
-        ])
-
-        NSLayoutConstraint.activate([
-            alarmButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -72),
-            alarmButton.leadingAnchor.constraint(equalTo: stopButton.trailingAnchor, constant: 16)
-        ])
+        stopButton.snp.makeConstraints { make in
+            make.bottom.equalTo(safeArea.snp.bottom).offset(-70)
+            make.centerX.equalToSuperview()
+        }
         
-        NSLayoutConstraint.activate([
-            shapeView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            shapeView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)
-        ])
+        resetButton.snp.makeConstraints { make in
+            make.bottom.equalTo(safeArea.snp.bottom).offset(-72)
+            make.trailing.equalTo(stopButton.snp.leading).offset(-16)
+        }
         
-        NSLayoutConstraint.activate([
-            timeLabel.centerXAnchor.constraint(equalTo: shapeView.centerXAnchor),
-            timeLabel.centerYAnchor.constraint(equalTo: shapeView.centerYAnchor)
-        ])
+        alarmButton.snp.makeConstraints { make in
+            make.bottom.equalTo(safeArea.snp.bottom).offset(-72)
+            make.leading.equalTo(stopButton.snp.trailing).offset(16)
+        }
+        
+        shapeView.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview()
+        }
+        
+        timeLabel.snp.makeConstraints { make in
+            make.centerX.equalTo(shapeView.snp.centerX)
+            make.centerY.equalTo(shapeView.snp.centerY)
+        }
     }
     
     func updateViews(timeRemaining: String) {

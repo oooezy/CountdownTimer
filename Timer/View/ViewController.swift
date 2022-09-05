@@ -2,6 +2,7 @@ import UIKit
 
 import RxCocoa
 import RxSwift
+import SnapKit
 import Then
 
 var defaults = UserDefaults.standard
@@ -94,33 +95,32 @@ class ViewController: UIViewController {
         let safeArea = self.view.safeAreaLayoutGuide
         
         [stackView, line, startButton, pickerView].forEach({view.addSubview($0)})
-        [stackView, line, pickerView].forEach({$0.translatesAutoresizingMaskIntoConstraints = false})
 
-        NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: safeArea.topAnchor, constant: 70),
-            stackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor,constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16)
-        ])
+        stackView.snp.makeConstraints { make in
+            make.top.equalTo(safeArea.snp.top).offset(70)
+            make.leading.equalTo(safeArea.snp.leading).offset(16)
+            make.trailing.equalTo(safeArea.snp.trailing).offset(-16)
+        }
         
-        NSLayoutConstraint.activate([
-            line.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 20),
-            line.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 16),
-            line.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -16)
-        ])
+        line.snp.makeConstraints { make in
+            make.top.equalTo(stackView.snp.bottom).offset(20)
+            make.leading.equalTo(safeArea.snp.leading).offset(16)
+            make.trailing.equalTo(safeArea.snp.trailing).offset(-16)
+        }
         
-        NSLayoutConstraint.activate([
-            startButton.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -70),
-            startButton.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor)
-        ])
+        startButton.snp.makeConstraints { make in
+            make.bottom.equalTo(safeArea.snp.bottom).offset(-70)
+            make.centerX.equalTo(safeArea.snp.centerX)
+        }
 
-        NSLayoutConstraint.activate([
-            pickerView.centerXAnchor.constraint(equalTo: safeArea.centerXAnchor),
-            pickerView.centerYAnchor.constraint(equalTo: safeArea.centerYAnchor),
-            pickerView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
-            pickerView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
-            pickerView.heightAnchor.constraint(equalToConstant: 350)
-        ])
-        
+        pickerView.snp.makeConstraints { make in
+            make.centerX.equalTo(safeArea.snp.centerX)
+            make.centerY.equalTo(safeArea.snp.centerY)
+            make.leading.equalTo(safeArea.snp.leading)
+            make.trailing.equalTo(safeArea.snp.trailing)
+            make.height.equalTo(350)
+        }
+
         createStackView()
     }
     

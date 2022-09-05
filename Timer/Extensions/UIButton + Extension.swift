@@ -18,7 +18,6 @@ extension UIButton {
         button.layer.shadowOpacity = 0.3
         button.layer.shadowOffset = CGSize(width: 0, height: 6)
         button.layer.shadowRadius = 8
-        button.translatesAutoresizingMaskIntoConstraints = false
     }
     
     func setCircleButtonUI(image: String) {
@@ -29,6 +28,5 @@ extension UIButton {
         button.layer.shadowOpacity = 0.3
         button.layer.shadowOffset = CGSize(width: 0, height: 5)
         button.layer.shadowRadius = 4
-        button.translatesAutoresizingMaskIntoConstraints = false
     }
 }

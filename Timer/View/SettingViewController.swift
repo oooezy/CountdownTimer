@@ -7,6 +7,7 @@
 
 import UIKit
 
+import SnapKit
 import Then
 
 class SettingViewController: UIViewController {
@@ -18,7 +19,6 @@ class SettingViewController: UIViewController {
     let table = UITableView().then {
         $0.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         $0.backgroundColor = UIColor.init(named: "BGColor")
-        $0.translatesAutoresizingMaskIntoConstraints = false
         
         if #available(iOS 15.0, *) {
             $0.sectionHeaderTopPadding = 1
@@ -54,12 +54,13 @@ class SettingViewController: UIViewController {
         let safeArea = self.view.safeAreaLayoutGuide
         
         self.view.addSubview(table)
-        NSLayoutConstraint.activate([
-            table.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor),
-            table.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor),
-            table.topAnchor.constraint(equalTo: safeArea.topAnchor),
-            table.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor)
-        ])
+        
+        table.snp.makeConstraints { make in
+            make.leading.equalTo(safeArea.snp.leading)
+            make.trailing.equalTo(safeArea.snp.trailing)
+            make.top.equalTo(safeArea.snp.top)
+            make.bottom.equalTo(safeArea.snp.bottom)
+        }
     }
 
     private func setState() {
