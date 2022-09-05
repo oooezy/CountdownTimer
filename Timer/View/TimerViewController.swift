@@ -7,6 +7,7 @@
 
 import UIKit
 import RxSwift
+import AVFoundation
 
 class TimerViewController: UIViewController {
     private let viewModel = ViewModel()
@@ -200,6 +201,7 @@ extension TimerViewController: CountdownTimerDelegate {
 
         if isAlarmButtonTapped == true {
             presentAlert(message: "시간이 다됐어요! 🙌🏻")
+            UIDevice.vibrate()
         }
         
         timeLabel.text = viewModel.secondsToString(seconds: Int(duration))
