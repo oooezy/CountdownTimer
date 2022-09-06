@@ -63,8 +63,8 @@ class ViewModel {
    }
     
     func pause() {
-        state = .paused
         cancelTimer()
+        state = .paused
     }
     
     func restart() {

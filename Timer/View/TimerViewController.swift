@@ -132,10 +132,10 @@ class TimerViewController: UIViewController {
     }
 
     @objc func resetButtonTapped() {
-        viewModel.start()
+        shapeLayer.resetAnimation()
+        viewModel.reset()
         timeLabel.text = viewModel.secondsToString(seconds: Int(duration))
-        basicAnimation()
-        stopButton.setTitle("일시 정지", for: .normal)
+        stopButton.setTitle("타이머 시작", for: .normal)
     }
 
     @objc func alarmButtonTapped() {
