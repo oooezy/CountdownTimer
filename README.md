@@ -1,12 +1,12 @@
 # ⏰ 타이머 : Countdown Timer
 ![Badge](https://img.shields.io/badge/language-swift5.6-blue) 
 ![Badge](https://img.shields.io/badge/platform-iOS14+-yellow) 
-![Badge](https://img.shields.io/badge/version-1.1.1-green)
+![Badge](https://img.shields.io/badge/version-1.2.2-green)
 
-![thumb](https://user-images.githubusercontent.com/95845594/164694258-51dbfa7d-8a6a-4567-b331-757899783906.png)
+![Frame 1](https://user-images.githubusercontent.com/95845594/188552680-f3da27f4-e828-44f6-907b-9f417807068d.jpg)
 
 ## 프로모션 텍스트
-- **‘타이머 : Countdown Timer’** 앱은 심플하고 단순한 무료 타이머 입니다.
+- **‘타이머 : Countdown Timer’** 는 심플하고 단순한 무료 타이머 앱입니다.
 - 원하는 시간만큼 타이머를 설정하여 낭비되는 시간들을 효율적으로 관리해 보세요.
 
 
@@ -20,5 +20,6 @@
 - **다크 모드 설정**
     - 설정 페이지에서 라이트 모드 / 다크 모드를 설정할 수 있어요.
     
+
 
 🔗 [앱 스토어 바로가기](https://apps.apple.com/kr/app/countdown-timer-%ED%83%80%EC%9D%B4%EB%A8%B8/id1617318596)
