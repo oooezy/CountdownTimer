@@ -4,7 +4,6 @@
 ![Badge](https://img.shields.io/badge/version-1.2.2-green)
 
 
-🔗 [앱 스토어 바로가기](https://apps.apple.com/kr/app/countdown-timer-%ED%83%80%EC%9D%B4%EB%A8%B8/id1617318596)
 
 ---
 ## Countdown Timer App
@@ -12,6 +11,7 @@
 - **기간**  : 22.04.02 ~ 22.04.10
 - **팀원**  : 이은지 (기획 / 디자인 / 개발 / 배포)
 - **상태**  : App Store 배포 완료
+- [🔗 앱스토어 바로가기](https://apps.apple.com/kr/app/countdown-timer-%ED%83%80%EC%9D%B4%EB%A8%B8/id1617318596)
 
 
 ---
