@@ -4,6 +4,7 @@
 ![Badge](https://img.shields.io/badge/version-1.2.2-green)
 
 
+<img width="30%" src = "https://user-images.githubusercontent.com/95845594/190113982-88b7b956-1ec3-4301-bbcd-bfb34ff2f848.gif">
 
 ---
 ## Countdown Timer App
@@ -30,7 +31,7 @@
 ---
 ## **앱을 만든 의도**
 
-처음 iOS 공부를 시작할 때, 강의를 보고 하나 둘씩 따라해보는 식으로 공부를 했습니다. 간단한 기능 부터 조금 더 복잡한 기능까지, 10여가지가 넘는 기능들을 구현하다보니 ‘이제 나만의 앱을 만들어볼 수 있겠다!’라는 자신감이 생겼고, 바로 기획과 디자인을 시작하였습니다. 만들어보고 싶은 어플은 많았지만, 페이지수가 많고 기능이 많은 어플을 처음부터 욕심내어 만들게 되면, 개발 도중 지치게 될 확률이 높아서 빠른 성취감을 얻기 위해 **가장 간단하고 심플한 앱**을 생각했습니다.그래서 첫 번째로 만들게 된 앱이 ‘**Countdown Timer**’앱 입니다.
+처음 iOS 공부를 시작할 때, 강의를 보고 하나 둘씩 따라해보는 식으로 공부를 했습니다. 간단한 기능 부터 조금 더 복잡한 기능까지, 10여가지가 넘는 기능들을 구현하다보니 ‘이제 나만의 앱을 만들어볼 수 있겠다!’라는 자신감이 생겼고, 바로 기획과 디자인을 시작하였습니다. 만들어보고 싶은 어플은 많았지만, 페이지수가 많고 기능이 많은 어플을 처음부터 욕심내어 만들게 되면, 개발 도중 지치게 될 확률이 높아서 빠른 성취감을 얻기 위해 **가장 간단하고 심플한 앱**을 생각했습니다. 그래서 첫 번째로 만들게 된 앱이 ‘**Countdown Timer**’ 앱 입니다.
 
 이렇게 단순한 이유로 어플을 개발했지만, 비교적 복잡하지 않은 구조다 보니 새로운 **아키텍처나** **프레임워크**를 직접 적용해보며 더욱 더 쉽게 익혀볼 수 있었습니다. 앱을 배포한 후, 원하던 기능(다크모드, 알람설정)을 추가해 나가며 유지보수를 진행했고, 지금도 주변사람들의 피드백을 받으며 보완해나가고 있는 중입니다.
 
@@ -44,7 +45,7 @@
 
 ### **2. 중복되거나 반복되는 코드**
 
-코드로 UI를 구현하다보니 반복되는 코드도 많고, 길이가 길어져서 고민이 많았습니다. 이를 해결하기 위해 자주 쓰거나 반복되는 코드들은 따로 Extension 으로 작성 후, 재사용할 수 있도록 구현하였습니다. 이 과정을 통해  앞으로 어떻게 코드를 작성해야 하는지 감을 잡게 되었고, 리팩토링이 왜 필요한지 깨닫게 되었습니다.
+코드로 UI를 구현하다보니 반복되는 코드도 많고, 길이가 길어져서 고민이 많았습니다. 이를 해결하기 위해 자주 쓰거나 반복되는 코드들은 따로 Extension 으로 작성 후, 재사용할 수 있도록 구현하였습니다. 이 과정을 통해  앞으로 어떻게 코드를 작성해야 하는지 감을 잡게 되었고, 리팩토링과정이 왜 필요한지 깨닫게 되었습니다.
 
 ```swift
 extension UILabel {
@@ -66,7 +67,7 @@ extension UILabel {
 ```swift
 @objc func modeSwitchChanged(_ sender: UISwitch) {
         if let window = UIApplication.shared.windows.first { // 앱 전체를 의미
-            if #available(iOS 13.0, *) {
+            if #available(iOS 14.0, *) {
                 window.overrideUserInterfaceStyle = modeSwitch.isOn == true ? .dark : .light
 								// 스위치 상태가 켜져있으면 dark mode, 아니면 light mode
                 defaults.set(modeSwitch.isOn, forKey: "darkModeState") // 변경된 스위치 값의 상태 저장
@@ -91,7 +92,7 @@ settingVC.modeSwitch.isOn = defaults.bool(forKey: "darkModeState")
 
 ### **4. 타이머 메모리 해제**
 
-타이머를 종료하지 않고 바로 메인 페이지로 돌아가는 경우, 기존의 타이머가 계속 작동하는 오류가 발생했습니다. 이를 해결하기 위해 기존 타이머를 **메모리에서 해제**시켜주는 코드를 추가했습니다. 
+타이머를 종료하지 않고 바로 메인 페이지로 돌아가는 경우, 기존의 타이머가 사라지지 않고 계속 작동하는 오류가 발생했습니다. 이를 해결하기 위해 기존 타이머를 **메모리에서 해제**시켜주는 코드를 추가했습니다. 
 
 ```swift
 /* TimerViewController */
@@ -101,7 +102,7 @@ override func viewWillDisappear(_ animated: Bool) {
 }
 
 /* ViewModel */
-// 타이머를 새로 시작할 때도 혹시 남아있을 수 있는 타이머 메모리에서 해제시켜준 후, 시작
+// 타이머를 새로 시작할 때도 혹시 남아있을 수 있는 타이머를 메모리에서 해제시켜준 후, 시작
 func start() {
         cancelTimer()
         state = .started
@@ -119,6 +120,7 @@ func runTimer() {
         .map { Int(self.duration) - ($0 + 1) }
         .take(until: { $0 == 0 }, behavior: .inclusive)
         .subscribe(onNext: { value in
+						self.remainDuration = value
             let time = self.secondsToString(seconds: value)
             self.delegate?.timerUpdate(timeRemaining: time)
         }, onCompleted: {
@@ -128,11 +130,13 @@ func runTimer() {
 }
 ```
 
-위 문제를 해결하기 위해서 타이머뷰가 열리면 유저가 선택한 만큼의 시간을 `timeLabel` 에 미리 적용시킨 후, 타이머가 `timeLabel` 을 업데이트하도록 설정하여 해결했습니다. 
+위 문제를 해결하기 위해서 Timer VIew가 열리면 유저가 선택한 만큼의 시간을 `timeLabel` 에 미리 적용시킨 후, 타이머가 `timeLabel` 을 업데이트하도록 설정하여 해결했습니다. 
 
 ```swift
-// ViewDidLoad
-timeLabel.text = viewModel.secondsToString(seconds: Int(**duration**))
+/* TimerViewController */
+override func viewDidLoad() {
+	timeLabel.text = viewModel.secondsToString(seconds: Int(**duration**))
+}
 ```
 
 ### 6. UITest 적용하기
@@ -148,7 +152,7 @@ alarmbuttonButton.tap()
 UITest를 적용하던 중에, 같은 버튼타입인데 아래처럼 다른 형식으로 입력되어지는 것을 보고, `app.buttons["startButton"]` 으로 바꿔보았더니 에러가 발생했습니다. 중복되는 버튼 이름이 있어서 에러가 발생하는 것 같아 `startButton` 에 `accessibilityIdentifier` 을 적용해주고 테스트코드 또한 수정해주었더니 정상적으로 작동하는 것을 확인할 수 있었습니다.
 
 ```swift
-private lazy var  startButton: UIButton = {
+private lazy var startButton: UIButton = {
         let startButton = UIButton()
         startButton.setStateButtonUI(buttonTitle: "타이머 시작")
         startButton.accessibilityIdentifier = "startButton"
@@ -162,19 +166,19 @@ let startButton = app.buttons.matching(identifier: "startButton").element
         startButton.tap()
 ```
 
-이 오류를 해결하면서 `AccessibilityLabel`, `Accessibility identifier` 의 차이점과  중요성에 대해 알게 되었습니다.  👉 [해당 이슈 블로그](https://medium.com/@leeeeunz/swift-uitest%EB%A5%BC-%EC%A0%81%EC%9A%A9%ED%95%B4%EB%B3%B4%EC%9E%90-1-78e995264c16) 
+이 오류를 해결하면서 `AccessibilityLabel`, ********`Accessibility identifier` 의 차이점과  중요성에 대해 알게 되었습니다.  👉 [해당 이슈 블로그](https://medium.com/@leeeeunz/swift-uitest%EB%A5%BC-%EC%A0%81%EC%9A%A9%ED%95%B4%EB%B3%B4%EC%9E%90-2-xcuiapplication-xcuelement-xcuelementquery-accessibilitylabel-31fc70a9cc10)
 
 ---
 ## **기획부터 배포까지의 과정**
 
-기획부터 배포까지 혼자 진행하다보니 어려웠던 부분들이 꽤 많이 있었습니다. 오로지 구글과 Stackoverflow, 오픈카톡 등에 질문해가며 문제를 해결해 나갈 수 밖에 없는 과정에서 ‘팀원이 있었다면 더 효율적으로 해결해 나갈 수 있을 텐데’, ‘더 다양한 의견들을 들어보고 진행해나가면 좋을텐데’ 라는 생각들이 들었습니다.
+기획부터 배포까지 혼자 진행하다보니 어려웠던 부분들이 꽤 많이 있었습니다. 오로지 구글과 Stackoverflow, 오픈카톡 등에 질문해가며 문제를 해결해 나갈 수 밖에 없는 과정에서 ‘팀원이 있었다면 더 효율적으로 해결해 나갈 수 있을 텐데’, ‘더 다양한 의견들을 들어보고 진행해나가면 좋을텐데’ 라는 아쉬움이 남았습니다.
 
 하지만, 일단 배포까지 목표로 한 이상 혼자서라도 해내야 했고, 수많은 에러들을 거치며 앱 스토어에 올라갈 수 있게 되었습니다. 혼자라서 어려웠고, 혼자라서 편했던 점도 있었지만 어느 과정에서든 배움은 있을 수 밖에 없기에 좋은 경험이었다고 생각합니다. 무엇보다 앱 스토어에 저의 앱이 게시된 날, 너무 뿌듯했고, 제가 오래전부터 막연하게 꿈꿔오던 걸 이뤘다고 생각하니 큰 성취감을 느낄 수 있었습니다. 작지만 큰 목표를 이루었고, 또 다음 목표를 이룰 수 있다는 용기를 얻었던 것 같았습니다.
 
 ---
 ## **단순한 앱 제작이 아닌 실제 배포를 통하여 배운 점**
 
-실제 배포를 해서 너무 기뻣지만, 한편으로 내가 만든 서비스가 전세계 사람들에게 공유된다고 생각하니 적지 않은 부담감 또한 있었던 것 같습니다. 제가 가장 먼저 할 수 있는 건 주변 사람들의 피드백을 받고 앱을 수정하고 보완해 나가는 일이었기 때문에 친구들과 지인들에게 앱에 대해 평가를 요청하고 의견을 수렴해 꾸준히 업데이트를 진행할 예정입니다.
+실제 배포를 해서 너무 기뻣지만, 한편으로 내가 만든 서비스가 전세계 사람들에게 공유된다고 생각하니 적지 않은 부담감 또한 있었던 것 같습니다. 제가 가장 먼저 할 수 있는 건 주변 사람들의 피드백을 받고 앱을 수정하고 보완해 나가는 일이었기 때문에 친구들과 가족들에게 앱에 대해 평가를 요청하고 의견을 수렴해 꾸준히 업데이트를 진행할 예정입니다.
 
 ----
 ## 🛠 업데이트
